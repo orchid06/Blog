@@ -237,8 +237,8 @@
                         <a href="{{route('admin.users')}}" class="list-group-item list-group-item-action py-2 ripple inactive">
                             <i class="fas fa-chart-area fa-fw me-3"></i><span>Users</span>
                         </a>
-                        <a href="{{route('admin.products')}}" class="list-group-item list-group-item-action py-2 ripple inactive">
-                            <i class="fas fa-chart-area fa-fw me-3"></i><span>Products</span>
+                        <a href="{{route('admin.blogs')}}" class="list-group-item list-group-item-action py-2 ripple inactive">
+                            <i class="fas fa-chart-area fa-fw me-3"></i><span>Blogs</span>
                         </a>
                     </div>
                 </div>

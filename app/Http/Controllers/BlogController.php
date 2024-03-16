@@ -300,7 +300,6 @@ class ProductController extends Controller
 
         $product = $cartProduct->product;
 
-
         $product->update(['qty' => $product->qty + $cartProduct->qty]);
 
         $cartProduct->delete();

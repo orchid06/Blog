@@ -42,9 +42,11 @@ class UserController extends Controller
         $user->password = ($request->password);
         $user->save();
 
+        $user->sendEmailVerificationNotification();
+
         Auth::guard('web')->login($user);
 
-        return redirect()->route('user.index')->with('success', 'You are now registered successfully');
+        return redirect()->route('verification.notice')->with('success', 'You are now registered successfully');
     }
 
     public function check(Request $request): RedirectResponse
@@ -69,12 +71,11 @@ class UserController extends Controller
 
     public function index(): View
     {
-        $products = Product::paginate(3);
 
-        return view('dashboard.user.home', compact('products'));
+        return view('dashboard.user.home');
     }
 
-    public function toggleActive(Request $request, $id): RedirectResponse
+    public function toggleActive(Request $request, int $id): RedirectResponse
     {
         $user = User::findorfail($id);
         $user->update([
@@ -87,13 +88,6 @@ class UserController extends Controller
     public function userProfile(int $id): View
     {
         $user = User::findorfail($id);
-
-        $latestProduct = $user->carts()
-            ->latest()
-            ->first();
-        $latestProduct ? $productName = $latestProduct->product->product_name
-            : $productName = "No product Added";
-
         return view('dashboard.user.profile')->with('user', $user);
     }
 

@@ -10,10 +10,7 @@
                 {{session()->get('error')}}
             </div>
             @endif
-
-            <!-- /resources/views/post/create.blade.php -->
-
-
+            
             @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>

@@ -8,12 +8,15 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
+
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $table ='users';
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -47,10 +50,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'is_active'   => 'boolean',
+        'like' => 'object',
+        'dislike' => 'object'
     ];
 
-    public function carts()
-    {
-        return $this->hasMany(Cart::class);
-    }
+    // public function carts()
+    // {
+    //     return $this->hasMany(Cart::class);
+    // }
 }

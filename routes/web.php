@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Auth\VerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,10 +23,18 @@ use App\Http\Controllers\UserController;
 // });
 
 Auth::routes();
+// Auth::routes(['verify' => true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/Dashboard', [ProductController::class, 'index'])->name('index');
-Route::view('/', 'login');
+Route::view('/', 'welcome');
+Route::view('/login', 'login')->name('login');
+
+Route::get('/email/verify', [VerificationController::class, 'show'])->name('verification.notice');
+Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
+Route::post('/email/verification-notification', [VerificationController::class, 'sendVerificationEmail'])->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+Route::post('/verify-email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
+
 
 Route::prefix('user')->name('user.')->group(function () {
 
@@ -40,7 +49,7 @@ Route::prefix('user')->name('user.')->group(function () {
     Route::post('/{id}/toggle-active', [UserController::class, 'toggleActive'])->name('toggleActive');
 
 
-    Route::middleware(['auth','user.verified'])->group(function () {
+    Route::middleware(['auth', 'user.verified'])->group(function () {
 
         Route::get('/home', [UserController::class, 'index'])->name('index');
         Route::post('/logout', [UserController::class, 'logout'])->name('logout');
@@ -63,10 +72,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth:admin'])->group(function () {
         Route::get('/home', [AdminController::class, 'index'])->name('index');
         Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
-        Route::get('/products', [AdminController::class, 'productView'])->name('products');
+        Route::get('/blogs', [AdminController::class, 'blogView'])->name('blogs');
         Route::get('/users', [AdminController::class, 'index'])->name('users');
         Route::post('/userCreate', [AdminController::class, 'userCreate'])->name('userCreate');
-        Route::get('/search', [AdminController::class, 'search'])->name('search'); 
+        Route::get('/search', [AdminController::class, 'search'])->name('search');
     });
 
     Route::get('/usercart/{id}', [AdminController::class, 'viewCart'])->name('viewCart');

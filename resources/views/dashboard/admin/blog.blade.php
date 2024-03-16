@@ -1,4 +1,6 @@
+@extends('layouts.admin')
 
+@section('content')
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,8 +14,6 @@
     <link rel="icon" type="image/x-icon" href="assets('assets/favicon.ico')" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 
 <body>
@@ -27,7 +27,7 @@
                     <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="#!">Contact</a></li>
-                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{route('login')}}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Blog</a></li>
                 </ul>
             </div>
         </div>
@@ -168,3 +168,5 @@
 </body>
 
 </html>
+
+@endsection

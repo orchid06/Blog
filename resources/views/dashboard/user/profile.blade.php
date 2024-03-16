@@ -142,27 +142,7 @@
     }
 </style>
 
-@if(session()->has('error'))
-<div class="alert alert-danger" role="alert">
-    {{session()->get('error')}}
-</div>
-@endif
-
-@if ($errors->any())
-<div class="alert alert-danger">
-    <ul>
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
-
-@if(session()->has('success'))
-<div class="alert alert-success" role="alert">
-    {{session()->get('success')}}
-</div>
-@endif
+@include('includes.alerts')
 <div class="page-content page-container" id="page-content">
     <div class="padding">
         <div class="row container d-flex justify-content-center">
@@ -215,7 +195,7 @@
                                                 <div class="row">
                                                     <div class="col-sm-6">
                                                         <p class="m-b-10 f-w-600">Total Item</p>
-                                                        <h6 class="text-muted f-w-400">{{$user->carts()->count()}}</h6>
+                                                        <h6 class="text-muted f-w-400"></h6>
                                                     </div>
                                                 </div>
                                             </div>

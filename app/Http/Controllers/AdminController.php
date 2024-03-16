@@ -6,7 +6,6 @@ use App\Models\Admin;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use App\Models\Cart;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
@@ -46,26 +45,14 @@ class AdminController extends Controller
 
     public function index(): View
     {
-        $users    = User::withcount('carts')->get();
+        $users    = User::all();
 
         return view('dashboard.admin.home', compact('users'));
     }
 
-    public function productView(): View
+    public function blogView(): View
     {
-        $products = Product::with(['carts'])->withCount(['carts'])->latest()->get();
-
-        $totalQty = $totalPrice = 0;
-
-        $products = $products->map(function (Product $product) use (&$totalQty, &$totalPrice) {
-            $cartQty     = $product->carts->sum('qty');
-            $totalQty   += $product->qty + $cartQty;
-            return $product;
-        });
-
-        $totalProduct = Product::count();
-
-        return view('dashboard.admin.product', compact('products', 'totalQty', 'totalProduct'));
+        return view('dashboard.admin.blog');
     }
 
     public function viewCart($id): View
@@ -153,10 +140,10 @@ class AdminController extends Controller
 
     public function search(Request $request): View
     {
-        $search = $request->input('search');
+        $search = "%".$request->input('search')."%";
 
-        $products = Product::where('title', 'LIKE', "%$search%")
-            ->orWhere('description', 'LIKE', "%$search%")->paginate(3);
+        $products = Product::where('title', 'LIKE', $search )
+            ->orWhere('description', 'LIKE', $search )->paginate(3);
 
         $totalProduct  = Product::count();
         $totalQty      = Product::sum('qty');

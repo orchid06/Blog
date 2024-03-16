@@ -1,153 +1,133 @@
 @extends('layouts.user')
-
 @section('content')
 
-<body class="antialiased">
-    <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
-        <div class="container mt-5">
-            @if(session()->has('error'))
-            <div class="alert alert-danger" role="alert">
-                {{session()->get('error')}}
-            </div>
-            @endif
+@include('includes.alerts')
 
-            @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
+<!-- Page header with logo and tagline-->
+<header class="py-5 border-bottom mb-4" style="background-image: url('/cover.jpg'); background-size: cover; background-position: center;">
+    <div class="container">
+        <div class="text-center my-5" style="color: white;">
+            <h1 class="fw-bolder">Welcome </h1>
+            <p class="lead mb-0">to this blog</p>
+        </div>
+    </div>
+</header>
+<!-- Page content-->
+<div class="container">
+    <div class="row">
+        <!-- Blog entries-->
+        <div class="col-lg-8">
+            <!-- Featured blog post-->
+            <div class="card mb-4">
+                <a href="#!"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                <div class="card-body">
+                    <div class="small text-muted">January 1, 2023</div>
+                    <h2 class="card-title">Featured Post Title</h2>
+                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
+                    <a class="btn btn-primary" href="#!">Read more →</a>
+                </div>
+            </div>
+            <!-- Nested row for non-featured blog posts-->
+            <div class="row">
+                <div class="col-lg-6">
+                    <!-- Blog post-->
+                    <div class="card mb-4">
+                        <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                        <div class="card-body">
+                            <div class="small text-muted">January 1, 2023</div>
+                            <h2 class="card-title h4">Post Title</h2>
+                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
+                            <a class="btn btn-primary" href="#!">Read more →</a>
+                        </div>
+                    </div>
+                    <!-- Blog post-->
+                    <div class="card mb-4">
+                        <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                        <div class="card-body">
+                            <div class="small text-muted">January 1, 2023</div>
+                            <h2 class="card-title h4">Post Title</h2>
+                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
+                            <a class="btn btn-primary" href="#!">Read more →</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <!-- Blog post-->
+                    <div class="card mb-4">
+                        <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                        <div class="card-body">
+                            <div class="small text-muted">January 1, 2023</div>
+                            <h2 class="card-title h4">Post Title</h2>
+                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
+                            <a class="btn btn-primary" href="#!">Read more →</a>
+                        </div>
+                    </div>
+                    <!-- Blog post-->
+                    <div class="card mb-4">
+                        <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                        <div class="card-body">
+                            <div class="small text-muted">January 1, 2023</div>
+                            <h2 class="card-title h4">Post Title</h2>
+                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam.</p>
+                            <a class="btn btn-primary" href="#!">Read more →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Pagination-->
+            <nav aria-label="Pagination">
+                <hr class="my-0" />
+                <ul class="pagination justify-content-center my-4">
+                    <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a></li>
+                    <li class="page-item active" aria-current="page"><a class="page-link" href="#!">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#!">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#!">3</a></li>
+                    <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
+                    <li class="page-item"><a class="page-link" href="#!">15</a></li>
+                    <li class="page-item"><a class="page-link" href="#!">Older</a></li>
                 </ul>
-            </div>
-            @endif
-
-            @if(session()->has('success'))
-            <div class="alert alert-success" role="alert">
-                {{session()->get('success')}}
-            </div>
-            @endif
-
-            <div class="mb-3">
-                <div class="row-3">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-11">
-                                <div class="mt-1 d-flex justify-content-between align-items-center">
-                                    <form action="{{ route('product.search') }}" method="get">
-                                        @csrf
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Search product" name="search" id="search" style="width: 950px;">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-secondary" type="submit">
-                                                    <i class="fa fa-search"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                    <!-- Cart Button -->
-                                    <a href="{{ Auth::check() ? route('cart.index', ['user_id' => Auth::user()->id]) : '#' }}" class="btn btn-dark">
-                                        My Cart
-                                        <i class="bi bi-cart"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+            </nav>
+        </div>
+        <!-- Side widgets-->
+        <div class="col-lg-4">
+            <!-- Search widget-->
+            <div class="card mb-4">
+                <div class="card-header">Search</div>
+                <div class="card-body">
+                    <div class="input-group">
+                        <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
+                        <button class="btn btn-primary" id="button-search" type="button">Go!</button>
                     </div>
                 </div>
             </div>
-            <!--Cards-->
-            <div class="mb-3">
-                <div class="container">
-                    @if(count($products)>0)
+            <!-- Categories widget-->
+            <div class="card mb-4">
+                <div class="card-header">Categories</div>
+                <div class="card-body">
                     <div class="row">
-                        @forelse( $products as $product )
-                        <div class="col-4">
-                            <div class="mt-3">
-                                <div class="card" style="width: 18rem;">
-                                    <div class="card-body">
-                                        <img src="{{url('uploads/'.$product->image)}}" style="width:250px; height:150px;">
-                                        <h6 class="card-subtitle mb-1 text-muted"></h6>
-                                        <a href="{{route('product.page', ['id'=>$product->id])}}" target="_blank">
-                                            <h5>{{$product->title}}</h5>
-                                        </a>
-                                        <p class="card-text">{{$product->description}}</p>
-                                        <h6 class="card-title">Price : {{$product->price}} BDT</h6>
-                                        <h6 class="card-title mb-1 text-muted">In Stock: {{$product->qty}}</h6>
-                                        <h6 class="card-title mb-1 text-muted">Discount: {{$product->discount}} {{$product->discountType}}</h6>
-                                        <h6 class="card-title mb-1 text-muted">Discounted Price : {{$product->discountedPrice}}</h6>
-                                        <!--addTOCart Buttons-->
-                                        <h6 class="card-title" style="text-align:right;">
-                                            <form action="{{ route('product.addToCart', ['id' => $product->id ]) }}" method="post" class="container">
-                                                @csrf
-                                                <div class="mt-3">
-                                                    <div class="row">
-                                                        <div class="col-6">
-                                                            <div class="input-group">
-                                                                <input id="qty" min="1" name="qty" value="1" type="number" class="form-control form-control-sm" />
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <div class="input-group">
-                                                                <button type="submit" class="btn btn-dark" style="font-size: 12px;">Add To Cart</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </h6>
-
-                                    </div>
-
-                                </div>
-                            </div>
+                        <div class="col-sm-6">
+                            <ul class="list-unstyled mb-0">
+                                <li><a href="#!">Web Design</a></li>
+                                <li><a href="#!">HTML</a></li>
+                                <li><a href="#!">Freebies</a></li>
+                            </ul>
                         </div>
-                        @empty
-                        <div class="row">
-                            <div class="col">
-                                <h3>No Product Found</h3>
-                            </div>
-                        </div>
-                        @endforelse
-                        <div class="mt-5">
-                            <nav aria-label="Page navigation example">
-                                <ul class="pagination justify-content-center">
-                                    <!-- Previous Page Link -->
-                                    @if ($products->onFirstPage())
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#" tabindex="-1">Previous</a>
-                                    </li>
-                                    @else
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ $products->previousPageUrl() }}" tabindex="-1">Previous</a>
-                                    </li>
-                                    @endif
-
-                                    <!-- Pagination Elements -->
-                                    @for ($i = 1; $i <= $products->lastPage(); $i++)
-                                        <li class="page-item {{ $i == $products->currentPage() ? 'active' : '' }}">
-                                            <a class="page-link" href="{{ $products->url($i) }}">{{ $i }}</a>
-                                        </li>
-                                        @endfor
-
-                                        <!-- Next Page Link -->
-                                        @if ($products->hasMorePages())
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $products->nextPageUrl() }}">Next</a>
-                                        </li>
-                                        @else
-                                        <li class="page-item disabled">
-                                            <span class="page-link">Next</span>
-                                        </li>
-                                        @endif
-                                </ul>
-                            </nav>
+                        <div class="col-sm-6">
+                            <ul class="list-unstyled mb-0">
+                                <li><a href="#!">JavaScript</a></li>
+                                <li><a href="#!">CSS</a></li>
+                                <li><a href="#!">Tutorials</a></li>
+                            </ul>
                         </div>
                     </div>
-                    @endif
-
                 </div>
+            </div>
+            <!-- Side widget-->
+            <div class="card mb-4">
+                <div class="card-header">Side Widget</div>
+                <div class="card-body">You can put anything you want inside of these side widgets. They are easy to use, and feature the Bootstrap 5 card component!</div>
             </div>
         </div>
     </div>
-</body>
+</div>
 @endsection

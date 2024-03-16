@@ -4,27 +4,7 @@
 <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
 <hr>
 <div class="container bootstrap snippets bootdey">
-    @if(session()->has('error'))
-    <div class="alert alert-danger" role="alert">
-        {{session()->get('error')}}
-    </div>
-    @endif
-
-    @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
-
-    @if(session()->has('success'))
-    <div class="alert alert-success" role="alert">
-        {{session()->get('success')}}
-    </div>
-    @endif
+    @include('includes.alerts')
 
     <div class="row justify-content-end">
         <div class="col-md-3">
@@ -142,7 +122,7 @@
                                         <a href="{{route('user.userProfile' , ['id' => $user->id])}}" class="user-link">{{$user->name}}</a>
                                     </td>
                                     <td>2013/08/12</td>
-                                    <td><a href="{{route('admin.viewCart', ['id'=>$user->id])}}">{{$user->carts_count}}</a></td>
+                                    <td>nothing</td>
                                     <td>
                                         <form method="post" action="{{ route('user.toggleActive', ['id'=>$user->id])}}">
                                             @csrf

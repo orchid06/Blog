@@ -6,15 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Product extends Model
+class Blog extends Model
 {
     use HasFactory;
-    protected $table   = 'products';
+    protected $table   = 'blogs';
     protected $guarded =[];
     protected $casts = ['gallery_image' => 'object'];
 
-    public function carts() :HasMany{
-        return $this->hasMany(Cart::class,'product_id','id');
-    }
+    // public function carts() :HasMany{
+    //     return $this->hasMany(Cart::class,'product_id','id');
+    // }
 
 }
