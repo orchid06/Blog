@@ -45,22 +45,50 @@ class VerificationController extends Controller
         return view('auth.verify');
     }
 
-    public function verify(Request $request)
+    // public function verify(Request $request)
+    // {
+    //     if (
+    //         $request->route('id') == $request->user()->getKey() &&
+    //         hash_equals((string) $request->route('hash'), sha1($request->user()->getEmailForVerification()))
+    //     ) {
+    //         if ($request->user()->hasVerifiedEmail()) {
+    //             return redirect()->route('user.index')->with('success', 'Email already verified.');
+    //         }
+    //         if ($request->user()->markEmailAsVerified()) {
+    //             event(new Verified($request->user()));
+    //         }
+    //         return redirect()->route('user.index')->with('success', 'Email verified successfully.');
+    //     }
+    //     return redirect()->route('user.index')->with('error', 'Invalid verification link.');
+    // }
+
+    public function verify(Request $request, int $id, $hash)
     {
         if (
             $request->route('id') == $request->user()->getKey() &&
-            hash_equals((string) $request->route('hash'), sha1($request->user()->getEmailForVerification()))
+            hash_equals((string) $hash, sha1($request->user()->getEmailForVerification()))
+
         ) {
+
             if ($request->user()->hasVerifiedEmail()) {
                 return redirect()->route('user.index')->with('success', 'Email already verified.');
             }
+
+
             if ($request->user()->markEmailAsVerified()) {
                 event(new Verified($request->user()));
             }
+
             return redirect()->route('user.index')->with('success', 'Email verified successfully.');
         }
-        return redirect()->route('user.index')->with('error', 'Invalid verification link.');
+
     }
+
+    public function verifyWithCode()
+    {
+        
+    }
+
 
     public function resend(Request $request)
     {

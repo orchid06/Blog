@@ -1,172 +1,218 @@
 @extends('layouts.admin')
 
 @section('content')
-<!DOCTYPE html>
-<html lang="en">
+<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+<hr>
+<div class="container bootstrap snippets bootdey">
+    @include('includes.alerts')
 
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Blog Home - Start Bootstrap Template</title>
-    <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="assets('assets/favicon.ico')" />
-    <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
-</head>
+    <div class="row justify-content-end">
+        <div class="col-md-3">
 
-<body>
-    <!-- Responsive navbar-->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#!">Blog</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#!">Contact</a></li>
-                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Blog</a></li>
-                </ul>
-            </div>
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#inputModal"> Add New Blog </button>
+
         </div>
-    </nav>
-    <!-- Page header with logo and tagline-->
-    <header class="py-5 border-bottom mb-4" style="background-image: url('/cover.jpg'); background-size: cover; background-position: center;">
-        <div class="container">
-            <div class="text-center my-5" style="color: white;">
-                <h1 class="fw-bolder">Welcome </h1>
-                <p class="lead mb-0">to this blog</p>
-            </div>
-        </div>
-    </header>
-    <!-- Page content-->
-    <div class="container">
-        <div class="row">
-            <!-- Blog entries-->
-            <div class="col-lg-8">
-                <!-- Featured blog post-->
-                <div class="card mb-4">
-                    <a href="#!"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                    <div class="card-body">
-                        <div class="small text-muted">January 1, 2023</div>
-                        <h2 class="card-title">Featured Post Title</h2>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
-                        <a class="btn btn-primary" href="#!">Read more →</a>
+    </div>
+
+
+    <div class="mt-4">
+
+        <div class="modal fade" id="inputModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title text center" id="exampleModalLabel">Add New User</h6>
                     </div>
-                </div>
-                <!-- Nested row for non-featured blog posts-->
-                <div class="row">
-                    <div class="col-lg-6">
-                        <!-- Blog post-->
-                        <div class="card mb-4">
-                            <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                            <div class="card-body">
-                                <div class="small text-muted">January 1, 2023</div>
-                                <h2 class="card-title h4">Post Title</h2>
-                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-                                <a class="btn btn-primary" href="#!">Read more →</a>
+                    <form method="POST" action="{{ route('admin.blogCreate') }}" enctype="multipart/form-data">
+                        @csrf
+
+                        <div class="row mb-3">
+                            <label for="title" class="col-md-4 col-form-label text-md-end">{{ __('Title') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="title" type="text" class="form-control @error('title') is-invalid @enderror" name="title" value="{{ old('title') }}" required autocomplete="title" autofocus placeholder="Enter Blog Title">
+
+                                @error('title')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
-                        <!-- Blog post-->
-                        <div class="card mb-4">
-                            <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                            <div class="card-body">
-                                <div class="small text-muted">January 1, 2023</div>
-                                <h2 class="card-title h4">Post Title</h2>
-                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-                                <a class="btn btn-primary" href="#!">Read more →</a>
+
+                        <div class="row mb-3">
+                            <label for="description" class="col-md-4 col-form-label text-md-end">{{ __('Description') }}</label>
+
+                            <div class="col-md-6">
+                                <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" required autocomplete="description" placeholder="Enter Description">{{ old('description') }}</textarea>
+
+
+                                @error('description')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <!-- Blog post-->
-                        <div class="card mb-4">
-                            <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                            <div class="card-body">
-                                <div class="small text-muted">January 1, 2023</div>
-                                <h2 class="card-title h4">Post Title</h2>
-                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-                                <a class="btn btn-primary" href="#!">Read more →</a>
+
+                        <div class="row mb-3">
+                            <label for="image" class="col-md-4 col-form-label text-md-end">{{ __('Feature Photo :') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="image" type="file" class="form-control" name="image">
                             </div>
                         </div>
-                        <!-- Blog post-->
-                        <div class="card mb-4">
-                            <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                            <div class="card-body">
-                                <div class="small text-muted">January 1, 2023</div>
-                                <h2 class="card-title h4">Post Title</h2>
-                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam.</p>
-                                <a class="btn btn-primary" href="#!">Read more →</a>
+
+                        <div class="row mb-3">
+                            <label for="gallery_image" class="col-md-4 col-form-label text-md-end">{{ __('Gallery Photo :') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="gallery_image" type="file" class="form-control" name="gallery_image[]" multiple>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <!-- Pagination-->
-                <nav aria-label="Pagination">
-                    <hr class="my-0" />
-                    <ul class="pagination justify-content-center my-4">
-                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a></li>
-                        <li class="page-item active" aria-current="page"><a class="page-link" href="#!">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#!">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#!">3</a></li>
-                        <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#!">15</a></li>
-                        <li class="page-item"><a class="page-link" href="#!">Older</a></li>
-                    </ul>
-                </nav>
-            </div>
-            <!-- Side widgets-->
-            <div class="col-lg-4">
-                <!-- Search widget-->
-                <div class="card mb-4">
-                    <div class="card-header">Search</div>
-                    <div class="card-body">
-                        <div class="input-group">
-                            <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
-                            <button class="btn btn-primary" id="button-search" type="button">Go!</button>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary"> {{ __('Create') }} </button>
                         </div>
-                    </div>
-                </div>
-                <!-- Categories widget-->
-                <div class="card mb-4">
-                    <div class="card-header">Categories</div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <ul class="list-unstyled mb-0">
-                                    <li><a href="#!">Web Design</a></li>
-                                    <li><a href="#!">HTML</a></li>
-                                    <li><a href="#!">Freebies</a></li>
-                                </ul>
-                            </div>
-                            <div class="col-sm-6">
-                                <ul class="list-unstyled mb-0">
-                                    <li><a href="#!">JavaScript</a></li>
-                                    <li><a href="#!">CSS</a></li>
-                                    <li><a href="#!">Tutorials</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Side widget-->
-                <div class="card mb-4">
-                    <div class="card-header">Side Widget</div>
-                    <div class="card-body">You can put anything you want inside of these side widgets. They are easy to use, and feature the Bootstrap 5 card component!</div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Footer-->
-   
-    <!-- Bootstrap core JS-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Core theme JS-->
-    <script src="{{asset('js/scripts.js')}}"></script>
-</body>
+    <div class="row">
+        <div class="col-md-10">
+            <div class="main-box no-header clearfix">
+                <div class="main-box-body clearfix">
+                    <div class="table-responsive">
+                        <table class="table user-list">
+                            <thead>
+                                <tr>
+                                    <th class="text-center"><span>Title</span></th>
+                                    <th><span>Description</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($blogs as $blog)
+                                <tr>
+                                    <td>
+                                        <img src="{{url('uploads/blog/'.$blog->image)}}" alt="">
+                                        <a href="" class="user-link">{{$blog->title}}</a>
+                                    </td>
+                                    <td>
+                                        {{$blog->description}}
+                                    </td>
+                                    <td style="width: 20%;">
 
-</html>
+                                        <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#editModal{{$blog->id}}">
+                                            <span class="fa-stack text-secondary">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </button>
+                                        <div class="modal fade" id="editModal{{$blog->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h6 class="text-center" id="exampleModalLabel">Update Blog</h6>
+                                                    </div>
+                                                    <form method="POST" action="{{ route('admin.blogUpdate' , ['id'=> $blog->id]) }}" enctype="multipart/form-data">
+                                                        @csrf
 
+                                                        <div class="row mb-3">
+                                                            <label for="title" class="col-md-4 col-form-label text-md-end">{{ __('Title') }}</label>
+
+                                                            <div class="col-md-6">
+                                                                <input id="title" type="text" class="form-control @error('title') is-invalid @enderror" name="title" value="{{$blog->title}}" required autocomplete="title" autofocus placeholder="Enter Blog Title">
+
+                                                                @error('title')
+                                                                <span class="invalid-feedback" role="alert">
+                                                                    <strong>{{ $message }}</strong>
+                                                                </span>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <label for="description" class="col-md-4 col-form-label text-md-end">{{ __('Description') }}</label>
+
+                                                            <div class="col-md-6">
+                                                                <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" required autocomplete="description" placeholder="Enter Description">{{ $blog->description }}</textarea>
+
+
+                                                                @error('description')
+                                                                <span class="invalid-feedback" role="alert">
+                                                                    <strong>{{ $message }}</strong>
+                                                                </span>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <label for="image" class="col-md-4 col-form-label text-md-end">{{ __('Feature Photo :') }}</label>
+
+                                                            <div class="col-md-6">
+                                                                <input id="image" type="file" class="form-control" name="image">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <label for="gallery_image" class="col-md-4 col-form-label text-md-end">{{ __('Gallery Photo :') }}</label>
+
+                                                            <div class="col-md-6">
+                                                                <input id="gallery_image" type="file" class="form-control" name="gallery_image[]" multiple>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-primary"> {{ __('Update') }} </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <button type="button" class="btn " data-bs-toggle="modal" data-bs-target="#deleteModal{{$blog->id}}">
+                                            <span class="fa-stack text-danger">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </button>
+                                        <div class="mt-3">
+
+                                            <div class="modal fade" id="deleteModal{{$blog->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h6 class="modal-title text-center" id="exampleModalLabel">Confirm Deletation</h6>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="container">
+
+                                                                ...Are you sure you want to delete <strong>{{$blog->title}} ?</strong>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <a href="{{route('admin.blogDelete' , ['id'=> $blog->id])}}" type="submit" class="btn btn-danger">Delete</a>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

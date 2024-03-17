@@ -10,6 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -53,6 +54,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'like' => 'object',
         'dislike' => 'object'
     ];
+
+    public function generateVerificationCode()
+    {
+        $this->verification_code = Str::random(6); 
+        $this->save();
+    }
 
     // public function carts()
     // {

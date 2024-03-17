@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Admin;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Product;
+use App\Models\Blog;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -50,9 +50,11 @@ class AdminController extends Controller
         return view('dashboard.admin.home', compact('users'));
     }
 
-    public function blogView(): View
+    public function viewBlog(): View
     {
-        return view('dashboard.admin.blog');
+        $blogs = Blog::latest()->get();
+
+        return view('dashboard.admin.blog', compact('blogs'));
     }
 
     public function viewCart($id): View
@@ -83,8 +85,8 @@ class AdminController extends Controller
         ]);
 
         $imageName = $request->hasFile('image')
-                                                ? $this->uploadImage($request->file('image'))
-                                                : null;
+            ? $this->uploadImage($request->file('image'))
+            : null;
 
         $user = new User();
         $user->name     = $request->input('name');
@@ -106,8 +108,8 @@ class AdminController extends Controller
         $user = User::findOrFail($id);
 
         $imageName = $request->hasFile('image')
-                                                ? $this->uploadImage($request->file('image'))
-                                                : $user->image;
+            ? $this->uploadImage($request->file('image'))
+            : $user->image;
 
         $password = $request->input('password');
 
@@ -125,25 +127,27 @@ class AdminController extends Controller
     {
         $user = User::findOrFail($id);
         $ids = $user->carts()->pluck('id')->toArray();
-        
-        if($ids){
+
+        if ($ids) {
             $productController = new ProductController();
-            foreach($ids as $id){
+            foreach ($ids as $id) {
                 $productController->cartProductDelete($id);
             }
         }
         $user->delete();
-        
+
 
         return back()->with('success', 'User deleted successfully.');
     }
 
+
+
     public function search(Request $request): View
     {
-        $search = "%".$request->input('search')."%";
+        $search = "%" . $request->input('search') . "%";
 
-        $products = Product::where('title', 'LIKE', $search )
-            ->orWhere('description', 'LIKE', $search )->paginate(3);
+        $products = Product::where('title', 'LIKE', $search)
+            ->orWhere('description', 'LIKE', $search)->paginate(3);
 
         $totalProduct  = Product::count();
         $totalQty      = Product::sum('qty');

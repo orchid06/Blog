@@ -2,42 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Blog;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use App\Models\Cart;
-use App\Models\Gallery;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
-class ProductController extends Controller
+class BlogController extends Controller
 {
 
 
     public function index(): View
     {
-        $products = Product::with(['carts'])->withCount(['carts'])->latest()->paginate(3);
+        $fblog = Blog::latest()->first();
+        $blogs = Blog::latest()->paginate(4);
 
-        $totalQty = $totalPrice = 0;
-
-        $products = $products->map(function (Product $product) use (&$totalQty, &$totalPrice) {
-            $cartQty     = $product->carts->sum('qty');
-            $totalQty   += $product->qty + $cartQty;
-            return $product;
-        });
-
-        $totalProduct = Product::count();
-
-        return view('home', compact('products', 'totalQty', 'totalProduct'));
+        return view('welcome', compact('blogs', 'fblog'));
     }
 
 
     public function uploadImage(mixed $file): string
     {
         $imageName = uniqid() . '.' . $file->getClientOriginalExtension();
-        $file->move('uploads/', $imageName);
+        $file->move('uploads/blog', $imageName);
         return $imageName;
     }
 
@@ -47,7 +36,7 @@ class ProductController extends Controller
 
         foreach ($files as $galleryImage) {
             $galleryImageName = uniqid() . '.' . $galleryImage->getClientOriginalExtension();
-            $galleryImage->move('uploads/gallery/', $galleryImageName);
+            $galleryImage->move('uploads/blog/gallery/', $galleryImageName);
             $galleryFileNames[] = $galleryImageName;
         }
 
@@ -62,20 +51,14 @@ class ProductController extends Controller
     }
 
 
-    public function store(Request $request): RedirectResponse
+    public function blogCreate(Request $request): RedirectResponse
     {
         $request->validate([
             'title'           => 'required|max:50',
             'description'     => 'required|max:200',
-            'price'           => 'required|numeric',
-            'qty'             => 'required|numeric',
             'image'           => 'required|image',
             'gallery_image.*' => 'image',
-            'discount'        => 'numeric|nullable',
-            'type'            => 'nullable|in:1,2',
-            'discountPrice'   => 'max:price|nullable',
         ]);
-
 
         $imageName            = $this->uploadImage($request->file('image'));
 
@@ -83,56 +66,26 @@ class ProductController extends Controller
             : null;
 
 
-        $price    = $request->input('price');
-        $discount = $request->input('discount');
-
-        $discountType    = $request->input('type') == 1
-            ? "%"
-            : "৳";
-
-        $discountedPrice = $request->input('type') == 1
-            ? $price - ($price * $discount * (1 / 100))
-            : $price - $discount;
-
-
-        Product::create([
+        Blog::create([
             'title'           => $request->input('title'),
             'description'     => $request->input('description'),
-            'price'           => $price,
-            'qty'             => $request->input('qty'),
             'image'           => $imageName,
-            'discount'        => $discount,
-            'discountType'    => $discountType,
-            'discountedPrice' => $discountedPrice,
-            'gallery_image'   => $galleryFileNames ?? null,
+            'gallery_image'   => $galleryFileNames,
         ]);
 
-        return back()->with('success', 'Data stored successfully');
+        return back()->with('success', 'Blog Created successfully');
     }
 
-    public function update(Request $request, int $id): RedirectResponse
+    public function BlogUpdate(Request $request, int $id): RedirectResponse
     {
         $request->validate([
-            'title'       => 'required|max:50',
-            'description' => 'required|max:200',
-            'price'       => 'required|numeric|gt:-1',
-            'qty'         => 'required|numeric',
-            'discount'    => 'nullable|lte:price|gt:-1|numeric',
+            'title'           => 'required|max:50',
+            'description'     => 'required|max:200',
+            'image'           => 'image',
+            'gallery_image.*' => 'image',
         ]);
 
-        $product = Product::findOrFail($id);
-
-
-        $discount     = $request->input('discount', 0);
-        $price        = $request->input('price');
-        $discountType = $request->input('type');
-
-        $discountedPrice = $discountType == 0 ? $price - ($price * $discount * (1 / 100))
-            : $price - $discount;
-
-        $discountType    = $discountType == 0 ? "%"
-            : "৳ Flat";
-
+        $product = Blog::findOrFail($id);
 
         $imageName = $request->hasFile('image')
             ? $this->uploadImage($request->file('image'))
@@ -145,11 +98,6 @@ class ProductController extends Controller
         $product->update([
             'title'           => $request->input('title'),
             'description'     => $request->input('description'),
-            'price'           => $price,
-            'qty'             => $request->input('qty'),
-            'discount'        => $discount,
-            'discountType'    => $discountType,
-            'discountedPrice' => $discountedPrice,
             'image'           => $imageName ?? $product->image,
             'gallery_image'   => $galleryFileNames ?? $product->galery_image,
         ]);
@@ -157,24 +105,16 @@ class ProductController extends Controller
         return back()->with('success', 'Product Updated');
     }
 
-    public function delete(int $id): RedirectResponse
+    public function blogDelete(int $id): RedirectResponse
     {
 
-        $product = Product::findOrfail($id);
+        $blog = Blog::findOrfail($id);
 
-        if (Cart::where('product_id', $product->id)->count() > 0) {
-
-            return back()->with('error', 'This item is added in cart and can not be deleted.');
-        }
-
-
-
-
-        $imagePath = public_path("uploads/{$product->image}");
+        $imagePath = public_path("uploads/{$blog->image}");
         $this->deleteFile($imagePath);
 
-        if ($product->gallery_image) {
-            foreach ($product->gallery_image as $galleryFileName) {
+        if ($blog->gallery_image) {
+            foreach ($blog->gallery_image as $galleryFileName) {
                 $galleryPath = public_path("uploads/gallery/{$galleryFileName}");
                 if (file_exists($galleryPath)) {
                     @unlink($galleryPath);
@@ -183,9 +123,9 @@ class ProductController extends Controller
         }
 
 
-        $product->delete();
+        $blog->delete();
 
-        return back()->with('success', 'Product deleted successfully.');
+        return back()->with('success', 'Blog deleted successfully.');
     }
 
     public function search(Request $request): View

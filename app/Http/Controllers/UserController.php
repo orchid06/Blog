@@ -6,11 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Product;
+use App\Models\Blog;
 use App\Models\Cart;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\View\View;
+use App\Notifications\CustomVerifyEmail;
 
 class UserController extends Controller
 {
@@ -43,10 +44,12 @@ class UserController extends Controller
         $user->save();
 
         $user->sendEmailVerificationNotification();
+        $user->generateVerificationCode();
+        $user->notify(new CustomVerifyEmail($user->verification_code));
 
         Auth::guard('web')->login($user);
 
-        return redirect()->route('verification.notice')->with('success', 'You are now registered successfully');
+        return redirect()->route('verification.notice')->with('success', 'Registered successfully! Please check your email to verify your account.');
     }
 
     public function check(Request $request): RedirectResponse
@@ -71,8 +74,15 @@ class UserController extends Controller
 
     public function index(): View
     {
+        $fblog = Blog::latest()->first();
+        $blogs = Blog::latest()->paginate(4);
 
-        return view('dashboard.user.home');
+        $user = Auth::user();
+
+        return view('dashboard.user.home')->with(['blogs' => $blogs,
+                                                  'fblog' => $fblog,
+                                                   'user' => $user]);
+
     }
 
     public function toggleActive(Request $request, int $id): RedirectResponse
@@ -129,9 +139,11 @@ class UserController extends Controller
         return back()->with('success', 'User Updated');
     }
 
-    public function checkOut()
+    public function updateLike(Request $request)
     {
-        return view('dashboard.user.payment');
-
+        User::where('id', $request->userId)->update([
+            'like'    => $request->input('likeValue'),
+            'dislike' => $request->input('dislikeValue'),
+        ]);
     }
 }

@@ -122,6 +122,7 @@
         }
 
         .user-list tbody td .user-link {
+            color: #0a0a0a;
             display: block;
             font-size: 1.25em;
             padding-top: 3px;

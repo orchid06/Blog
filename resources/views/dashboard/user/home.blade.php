@@ -3,7 +3,31 @@
 
 @include('includes.alerts')
 
-<!-- Page header with logo and tagline-->
+<style>
+    body {
+        margin: 40px;
+    }
+
+    button {
+        cursor: pointer;
+        outline: 0;
+        color: #AAA;
+
+    }
+
+    .btn:focus {
+        outline: none;
+    }
+
+    .green {
+        color: green;
+    }
+
+    .red {
+        color: red;
+    }
+</style>
+
 <header class="py-5 border-bottom mb-4" style="background-image: url('/cover.jpg'); background-size: cover; background-position: center;">
     <div class="container">
         <div class="text-center my-5" style="color: white;">
@@ -13,78 +37,81 @@
     </div>
 </header>
 <!-- Page content-->
+
 <div class="container">
     <div class="row">
         <!-- Blog entries-->
         <div class="col-lg-8">
             <!-- Featured blog post-->
             <div class="card mb-4">
-                <a href="#!"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                <a href="#!">
+                    <img class="card-img-top" src="{{url('/uploads/blog/'.$fblog->image)}}" style="width: 850px; height: 350px;" alt="..." />
+                </a>
+
                 <div class="card-body">
-                    <div class="small text-muted">January 1, 2023</div>
-                    <h2 class="card-title">Featured Post Title</h2>
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
+                    <div class="small text-muted">Created at: {{$fblog->created_at}}</div>
+                    <h2 class="card-title">{{$fblog->title}}</h2>
+                    <p class="card-text">{{$fblog->description}}</p>
                     <a class="btn btn-primary" href="#!">Read more →</a>
                 </div>
             </div>
             <!-- Nested row for non-featured blog posts-->
+
             <div class="row">
+                @forelse($blogs as $blog)
                 <div class="col-lg-6">
                     <!-- Blog post-->
                     <div class="card mb-4">
-                        <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                        <a href="#!">
+                            <img class="card-img-top" src="{{url('/uploads/blog/'.$blog->image)}}" style="width: 414px; height: 250px;" alt="..." />
+                        </a>
                         <div class="card-body">
-                            <div class="small text-muted">January 1, 2023</div>
-                            <h2 class="card-title h4">Post Title</h2>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
+                            <div class="small text-muted">created at: {{$blog->created_at}}</div>
+                            <h2 class="card-title h4">{{$blog->title}}</h2>
+                            <p class="card-text">{{$blog->description}}</p>
                             <a class="btn btn-primary" href="#!">Read more →</a>
                         </div>
-                    </div>
-                    <!-- Blog post-->
-                    <div class="card mb-4">
-                        <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                        <div class="card-body">
-                            <div class="small text-muted">January 1, 2023</div>
-                            <h2 class="card-title h4">Post Title</h2>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-                            <a class="btn btn-primary" href="#!">Read more →</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <!-- Blog post-->
-                    <div class="card mb-4">
-                        <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                        <div class="card-body">
-                            <div class="small text-muted">January 1, 2023</div>
-                            <h2 class="card-title h4">Post Title</h2>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-                            <a class="btn btn-primary" href="#!">Read more →</a>
-                        </div>
-                    </div>
-                    <!-- Blog post-->
-                    <div class="card mb-4">
-                        <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                        <div class="card-body">
-                            <div class="small text-muted">January 1, 2023</div>
-                            <h2 class="card-title h4">Post Title</h2>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam.</p>
-                            <a class="btn btn-primary" href="#!">Read more →</a>
+                        <div class="card-footer">
+                            <span class="mr-2">Likes: <span class="like-count">100</span></span>
+                            <span class="dislike-count">Dislikes: 50</span> <!-- Example dislike count -->
+
+                            <script src="https://use.fontawesome.com/fe459689b4.js"></script>
+
+                            <button class="btn" id="likeButton"><i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i></button>
+                            <button class="btn" id="dislikeButton"><i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i></button>
+
+                            <button class="btn btn-secondary mr-2">Comment</button>
+
+
                         </div>
                     </div>
                 </div>
+                @empty<p> No Blog Found</p>
+                @endforelse
             </div>
+
+
             <!-- Pagination-->
             <nav aria-label="Pagination">
                 <hr class="my-0" />
                 <ul class="pagination justify-content-center my-4">
-                    <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a></li>
-                    <li class="page-item active" aria-current="page"><a class="page-link" href="#!">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#!">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#!">3</a></li>
-                    <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
-                    <li class="page-item"><a class="page-link" href="#!">15</a></li>
-                    <li class="page-item"><a class="page-link" href="#!">Older</a></li>
+                    @if ($blogs->onFirstPage())
+                    <li class="page-item disabled"><span class="page-link">Newer</span></li>
+                    @else
+                    <li class="page-item"><a class="page-link" href="{{ $blogs->previousPageUrl() }}" tabindex="-1">Newer</a></li>
+                    @endif
+
+                    @foreach ($blogs->getUrlRange(1, $blogs->lastPage()) as $page => $url)
+                    <li class="page-item {{ $page == $blogs->currentPage() ? 'active' : '' }}" aria-current="page">
+                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                    </li>
+                    @endforeach
+
+                    @if ($blogs->hasMorePages())
+                    <li class="page-item"><a class="page-link" href="{{ $blogs->nextPageUrl() }}">Older</a></li>
+                    @else
+                    <li class="page-item disabled"><span class="page-link">Older</span></li>
+                    @endif
                 </ul>
             </nav>
         </div>
