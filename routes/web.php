@@ -31,11 +31,14 @@ Route::get('/', [BlogController::class, 'index']);
 
 Route::view('/login', 'login')->name('login');
 
+Route::post('/search', [BlogController::class, 'search'])->name('search');
+
 Route::get('/email/verify', [VerificationController::class, 'show'])->name('verification.notice');
 Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
-Route::post('/email/verify/', [VerificationController::class, 'verifyWithCode'])->middleware(['signed', 'throttle:6,1'])->name('verification.verifyWithCode');
+Route::post('/email/verify/{id}', [VerificationController::class, 'verifyWithCode'])->name('verifyWithCode');
+
 Route::post('/email/verification-notification', [VerificationController::class, 'sendVerificationEmail'])->middleware(['auth', 'throttle:6,1'])->name('verification.send');
-Route::post('/verify-email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
+Route::get('/verify-email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 
 
 Route::prefix('user')->name('user.')->group(function () {
@@ -48,7 +51,7 @@ Route::prefix('user')->name('user.')->group(function () {
     });
 
     Route::post('/user/login', [UserController::class, 'check'])->name('check');
-    Route::post('/{id}/toggle-active', [UserController::class, 'toggleActive'])->name('toggleActive');
+    
 
 
     Route::middleware(['auth', 'user.verified'])->group(function () {
@@ -59,7 +62,7 @@ Route::prefix('user')->name('user.')->group(function () {
         Route::get('/profile/{id}', [UserController::class, 'userProfile'])->name('userProfile');
         Route::post('/usrUpdate/{id}', [UserController::class, 'userUpdate'])->name('userUpdate');
         Route::get('cart/checkOut/{id}', [UserController::class, 'checkOut'])->name('checkOut');
-        Route::post('/update-like', [UserController::class, 'updateLike'])->name('update-like');
+        Route::get('/like/{blogId}', [BlogController::class, 'like'])->name('like');
     });
 });
 
@@ -87,6 +90,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/blogDelete/{id}', [BlogController::class, 'blogDelete'])->name('blogDelete');
 
         Route::get('/search', [AdminController::class, 'search'])->name('search');
+
+        Route::post('/{id}/toggle-active', [AdminController::class, 'toggleActive'])->name('toggleActive');
+        Route::post('/email-verify/{id}', [AdminController::class, 'emailVerify'])->name('emailVerify');
         
     });
 });

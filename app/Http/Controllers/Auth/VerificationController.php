@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Verified;
+use App\Models\User;
 
 class VerificationController extends Controller
 {
@@ -81,12 +82,24 @@ class VerificationController extends Controller
 
             return redirect()->route('user.index')->with('success', 'Email verified successfully.');
         }
-
     }
 
-    public function verifyWithCode()
+    public function verifyWithCode(Request $request, int $id)
     {
-        
+        $verificationCode = $request->input('verification_code');
+
+        $user = User::findorfail($id);
+
+        if (!$user->email_verified_at) {
+            if ($verificationCode == $user->verification_code) {
+
+                $user->markEmailAsVerified();
+                
+                return redirect()->route('user.index')->with('success', 'Email verified successfully.');
+            }
+            return back()->with('error', 'Incorrect Code. Try Again');
+        }
+        return redirect()->route('user.index')->with('success', 'Email already verified.');
     }
 
 

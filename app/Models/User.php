@@ -29,6 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'image',
+        'email_verified_at',
         'is_active',
     ];
 
@@ -61,8 +62,8 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->save();
     }
 
-    // public function carts()
-    // {
-    //     return $this->hasMany(Cart::class);
-    // }
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
 }

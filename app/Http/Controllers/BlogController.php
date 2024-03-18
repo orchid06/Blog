@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
-use App\Models\Product;
+use App\Models\Like;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -131,20 +131,37 @@ class BlogController extends Controller
     public function search(Request $request): View
     {
         $search = $request->input('search');
+        $fblog = Blog::latest()->first();
 
-        $products = Product::where('title', 'LIKE', "%$search%")
-            ->orWhere('description', 'LIKE', "%$search%")->paginate(3);
+        $blogs = Blog::where('title', 'LIKE', "%$search%")
+            ->orWhere('description', 'LIKE', "%$search%")->paginate(4);
 
-        $totalProduct  = Product::count();
-        $totalQty      = Product::sum('qty');
-        $totalPrice    = Product::sum('price');
+        return view('dashboard.user.home')->with([
+            'blogs' => $blogs,
+            'fblog' => $fblog
+        ]);
+    }
 
-        return view('dashboard.user.home', compact(
-            'products',
-            'totalQty',
-            'totalPrice',
-            'totalProduct',
-        ));
+    public function like($blogId)
+    {
+        
+        $existingLike = Like::where('user_id', auth()->id())
+            ->where('blog_id', $blogId)
+            ->first();
+
+        if ($existingLike) {
+            
+            $existingLike->delete();
+            return back()->with('success', 'Blog post unliked successfully.');
+        }
+
+        
+        Like::create([
+            'user_id' => auth()->id(),
+            'blog_id' => $blogId,
+        ]);
+
+        return back()->with('success', 'Blog post liked successfully.');
     }
 
     public function addToCart(Request $request, $id): RedirectResponse

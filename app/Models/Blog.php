@@ -23,8 +23,9 @@ class Blog extends Model
         });
     }
 
-    // public function carts() :HasMany{
-    //     return $this->hasMany(Cart::class,'product_id','id');
-    // }
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
 
 }

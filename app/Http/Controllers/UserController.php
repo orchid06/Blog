@@ -44,8 +44,6 @@ class UserController extends Controller
         $user->save();
 
         $user->sendEmailVerificationNotification();
-        $user->generateVerificationCode();
-        $user->notify(new CustomVerifyEmail($user->verification_code));
 
         Auth::guard('web')->login($user);
 
@@ -61,9 +59,17 @@ class UserController extends Controller
             'email.exists' => 'This email is not exists on user table'
         ]);
 
-        return   Auth::guard('web')->attempt($request->only('email', 'password'))
-            ? redirect()->route('user.index')->with('success', 'you are logged in')
-            : redirect()->route('user.login')->with('fail', 'Incorrect credentials');
+        if (Auth::guard('web')->attempt($request->only('email', 'password'))) {
+            $user = Auth::user();
+            switch ($user->email_verified_at) {
+                case null:
+                    return redirect()->route('verification.notice')->with('fail', 'Please verify your email address.');
+                default:
+                    return redirect()->route('user.index')->with('success', 'You are logged in.');
+            }
+        } else {
+            return redirect()->route('user.login')->with('fail', 'Incorrect credentials.');
+        }
     }
 
     public function logout(): RedirectResponse
@@ -72,28 +78,26 @@ class UserController extends Controller
         return redirect('/');
     }
 
-    public function index(): View
+    public function index()
     {
         $fblog = Blog::latest()->first();
         $blogs = Blog::latest()->paginate(4);
 
         $user = Auth::user();
+        $verified = $user->email_verified_at;
 
-        return view('dashboard.user.home')->with(['blogs' => $blogs,
-                                                  'fblog' => $fblog,
-                                                   'user' => $user]);
+        if ($verified == null) {
+            return redirect()->route('verification.notice')->with('error' , 'Please verify you email' );
+        }
 
-    }
-
-    public function toggleActive(Request $request, int $id): RedirectResponse
-    {
-        $user = User::findorfail($id);
-        $user->update([
-            'is_active' => $request->input('is_active')
+        
+        return view('dashboard.user.home')->with([
+            'blogs' => $blogs,
+            'fblog' => $fblog,
+            'user' => $user
         ]);
-
-        return redirect()->back()->with('success', 'User active status updated');
     }
+
 
     public function userProfile(int $id): View
     {

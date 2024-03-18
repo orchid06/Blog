@@ -108,7 +108,7 @@
                                 <tr>
                                     <th class="text-center"><span>User</span></th>
                                     <th><span>Created</span></th>
-                                    <th><span>On Cart</span></th>
+                                    <th><span>Email Status</span></th>
                                     <th><span>Status</span></th>
                                     <th class="text-center"><span>Email</span></th>
                                     <th class="text-center">&nbsp;</th>
@@ -122,9 +122,18 @@
                                         <a href="{{route('user.userProfile' , ['id' => $user->id])}}" class="user-link">{{$user->name}}</a>
                                     </td>
                                     <td>2013/08/12</td>
-                                    <td>nothing</td>
                                     <td>
-                                        <form method="post" action="{{ route('user.toggleActive', ['id'=>$user->id])}}">
+                                        <form method="post" action="{{ route('admin.emailVerify', ['id'=>$user->id])}}">
+                                            @csrf
+                                            @method('POST')
+                                            <input type="hidden" name="email_verified_at" value="{{ $user->email_verified_at ? null : now() }}">
+                                            <button type="submit" class="{{ $user->email_verified_at ? 'btn btn-success btn-sm' : 'btn btn-secondary btn-sm' }}">
+                                                {{ $user->email_verified_at ? 'Verified' : 'Verify' }}
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form method="post" action="{{ route('admin.toggleActive', ['id'=>$user->id])}}">
                                             @csrf
                                             @method('POST')
                                             <input type="hidden" name="is_active" value="{{ $user->is_active ? '0' : '1' }}">

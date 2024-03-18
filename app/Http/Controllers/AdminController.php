@@ -126,14 +126,6 @@ class AdminController extends Controller
     public function userDelete($id): RedirectResponse
     {
         $user = User::findOrFail($id);
-        $ids = $user->carts()->pluck('id')->toArray();
-
-        if ($ids) {
-            $productController = new ProductController();
-            foreach ($ids as $id) {
-                $productController->cartProductDelete($id);
-            }
-        }
         $user->delete();
 
 
@@ -142,22 +134,42 @@ class AdminController extends Controller
 
 
 
-    public function search(Request $request): View
+    // public function search(Request $request): View
+    // {
+    //     $search = "%" . $request->input('search') . "%";
+
+    //     $products = Product::where('title', 'LIKE', $search)
+    //         ->orWhere('description', 'LIKE', $search)->paginate(3);
+
+    //     $totalProduct  = Product::count();
+    //     $totalQty      = Product::sum('qty');
+    //     $totalPrice    = Product::sum('price');
+
+    //     return view('dashboard.admin.product', compact(
+    //         'products',
+    //         'totalQty',
+    //         'totalPrice',
+    //         'totalProduct',
+    //     ));
+    // }
+
+    public function toggleActive(Request $request, int $id): RedirectResponse
     {
-        $search = "%" . $request->input('search') . "%";
+        $user = User::findorfail($id);
+        $user->update([
+            'is_active' => $request->input('is_active')
+        ]);
 
-        $products = Product::where('title', 'LIKE', $search)
-            ->orWhere('description', 'LIKE', $search)->paginate(3);
+        return redirect()->back()->with('success', 'User active status updated');
+    }
 
-        $totalProduct  = Product::count();
-        $totalQty      = Product::sum('qty');
-        $totalPrice    = Product::sum('price');
+    public function emailVerify(Request $request, int $id)
+    {
+        $user = User::findorfail($id);
+        $user->update([
+            'email_verified_at' => $request->input('email_verified_at')
+        ]);
 
-        return view('dashboard.admin.product', compact(
-            'products',
-            'totalQty',
-            'totalPrice',
-            'totalProduct',
-        ));
+        return redirect()->back()->with('success', 'Email Verification status updated');
     }
 }

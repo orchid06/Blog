@@ -72,15 +72,21 @@
                             <a class="btn btn-primary" href="#!">Read more →</a>
                         </div>
                         <div class="card-footer">
-                            <span class="mr-2">Likes: <span class="like-count">100</span></span>
+                            <span class="mr-2">Likes: <span class="like-count">{{$blog->likes->count()}}</span></span>
                             <span class="dislike-count">Dislikes: 50</span> <!-- Example dislike count -->
 
                             <script src="https://use.fontawesome.com/fe459689b4.js"></script>
 
-                            <button class="btn" id="likeButton"><i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i></button>
-                            <button class="btn" id="dislikeButton"><i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i></button>
+                            <form method="get" action="{{ route('user.like', ['blogId'=>$blog->id])}}">
+                                @csrf
+                                
+                                <input type="hidden" name="like" >
+                                <button type="submit" class ="btn">
+                                <i class="fa fa-thumbs-up fa-lg" aria-hidden="true" style="color: {{ $blog->likes->contains('user_id', auth()->id()) ? 'green' : 'black' }}"></i>
+                                </button>
+                            </form>
 
-                            <button class="btn btn-secondary mr-2">Comment</button>
+                            <button type="button" class="btn btn-primary btn-sm">Comment</button>
 
 
                         </div>
@@ -121,10 +127,13 @@
             <div class="card mb-4">
                 <div class="card-header">Search</div>
                 <div class="card-body">
-                    <div class="input-group">
-                        <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
-                        <button class="btn btn-primary" id="button-search" type="button">Go!</button>
-                    </div>
+                    <form action="{{route('search')}}" method="post">
+                        @csrf
+                        <div class="input-group">
+                            <input class="form-control" type="text" id="search" name="search" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
+                            <button class="btn btn-primary" id="button-search" type="submit">Go!</button>
+                        </div>
+                    </form>
                 </div>
             </div>
             <!-- Categories widget-->
