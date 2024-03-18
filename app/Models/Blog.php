@@ -28,4 +28,9 @@ class Blog extends Model
         return $this->hasMany(Like::class);
     }
 
+    public function Dislikes()
+    {
+        return $this->hasMany(Dislike::class);
+    }
+
 }
