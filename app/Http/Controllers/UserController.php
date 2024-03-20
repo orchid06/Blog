@@ -91,7 +91,7 @@ class UserController extends Controller
         }
 
         
-        return view('dashboard.user.home')->with([
+        return view('home')->with([
             'blogs' => $blogs,
             'fblog' => $fblog,
             'user' => $user

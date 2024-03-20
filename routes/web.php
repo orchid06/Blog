@@ -63,6 +63,9 @@ Route::prefix('user')->name('user.')->group(function () {
         Route::post('/usrUpdate/{id}', [UserController::class, 'userUpdate'])->name('userUpdate');
         Route::get('cart/checkOut/{id}', [UserController::class, 'checkOut'])->name('checkOut');
         Route::get('/like/{blogId}', [BlogController::class, 'like'])->name('like');
+        Route::get('/dislike/{blogId}', [BlogController::class, 'dislike'])->name('dislike');
+        Route::get('/blog-detail/{slug}', [BlogController::class, 'blogDetail'])->name('blogDetail');
+        Route::post('/comment/{id}', [BlogController::class, 'comment'])->name('comment');
     });
 });
 
@@ -76,6 +79,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 
     Route::middleware(['auth:admin'])->group(function () {
+        
         Route::get('/home', [AdminController::class, 'index'])->name('index');
         Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
 
@@ -93,23 +97,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::post('/{id}/toggle-active', [AdminController::class, 'toggleActive'])->name('toggleActive');
         Route::post('/email-verify/{id}', [AdminController::class, 'emailVerify'])->name('emailVerify');
+
+        Route::get('/all-comments/',       [AdminController::class, 'comments'])->name('comments');
+        Route::post('/comment-approve/{id}', [AdminController::class, 'commentApprove'])->name('commentApprove');
+        Route::post('/comment-update/{id}', [AdminController::class, 'commentUpdate'])->name('commentUpdate');
+        Route::get('/comment-decline/{id}', [AdminController::class, 'commentDecline'])->name('commentDecline');
+
+        Route::get('view-comment/{id}' , [AdminController::class, 'viewComment'])->name('viewComment');
         
     });
-});
-
-Route::name('product.')->group(function () {
-
-    Route::post('/store', [ProductController::class, 'store'])->name('store');
-    Route::get('/search', [ProductController::class, 'search'])->name('search');
-    Route::post('/update/{id}', [ProductController::class, 'update'])->name('update');
-    Route::get('/delete/{id}', [ProductController::class, 'delete'])->name('delete');
-    Route::post('/additem/{id}', [ProductController::class, 'addToCart'])->name('addToCart');
-    Route::get('/product/{id}', [ProductController::class, 'productDetails'])->name('page');
-});
-
-Route::name('cart.')->group(function () {
-
-    Route::get('/cart/', [ProductController::class, 'cartIndex'])->name('index');
-    Route::get('/cart/delete/{id}', [ProductController::class, 'cartProductDelete'])->name('productDelete');
-    Route::post('cart/QtyUpdate/{id}', [ProductController::class, 'cartQtyUpdate'])->name('qtyUpdate');
 });

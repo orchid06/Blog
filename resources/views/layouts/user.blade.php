@@ -65,8 +65,7 @@
     <!-- Page content-->
     <main>
         @yield('content')
-    </main>
-    
+    </main>    
     <!-- Footer-->
 
     <!-- Bootstrap core JS-->

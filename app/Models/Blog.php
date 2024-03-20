@@ -33,4 +33,9 @@ class Blog extends Model
         return $this->hasMany(Dislike::class);
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
 }

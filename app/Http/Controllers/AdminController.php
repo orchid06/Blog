@@ -11,7 +11,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use App\Http\Controllers\ProductController;
-
+use App\Models\Comment;
+use App\Models\PendingComment;
 
 class AdminController extends Controller
 {
@@ -54,25 +55,7 @@ class AdminController extends Controller
     {
         $blogs = Blog::latest()->get();
 
-        return view('dashboard.admin.blog', compact('blogs'));
-    }
-
-    public function viewCart($id): View
-    {
-        $user  = auth('web')->user();
-        $user = User::findorfail($id);
-        $user_name = $user->name;
-        $user_id = $user->id;
-
-        $cartProducts = $user->carts;
-
-        $totalCartProduct = $cartProducts->count();
-        $totalCartQty     = $cartProducts->sum('qty');
-        $totalCartPrice   = $cartProducts->sum(function ($cartProduct) {
-            return $cartProduct->price * $cartProduct->qty;
-        });
-
-        return view('dashboard.user.cart', compact('cartProducts', 'totalCartProduct', 'totalCartQty', 'totalCartPrice', 'user_name', 'user_id'));
+        return view('dashboard.admin.blog')->with('blogs', $blogs);
     }
 
     public function userCreate(Request $request): RedirectResponse
@@ -132,27 +115,6 @@ class AdminController extends Controller
         return back()->with('success', 'User deleted successfully.');
     }
 
-
-
-    // public function search(Request $request): View
-    // {
-    //     $search = "%" . $request->input('search') . "%";
-
-    //     $products = Product::where('title', 'LIKE', $search)
-    //         ->orWhere('description', 'LIKE', $search)->paginate(3);
-
-    //     $totalProduct  = Product::count();
-    //     $totalQty      = Product::sum('qty');
-    //     $totalPrice    = Product::sum('price');
-
-    //     return view('dashboard.admin.product', compact(
-    //         'products',
-    //         'totalQty',
-    //         'totalPrice',
-    //         'totalProduct',
-    //     ));
-    // }
-
     public function toggleActive(Request $request, int $id): RedirectResponse
     {
         $user = User::findorfail($id);
@@ -171,5 +133,50 @@ class AdminController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Email Verification status updated');
+    }
+
+    public function comments()
+    {
+        $comments = Comment::latest()->get();
+
+        return view('dashboard.admin.comment')->with('comments', $comments);
+    }
+
+    public function commentApprove(Request $request, int $id)
+    {
+        $user = Comment::findorfail($id);
+        $user->update([
+            'status' => $request->input('status')
+        ]);
+
+        return redirect()->back()->with('success', 'Comment Approved');
+    }
+
+    public function commentUpdate(Request $request, int $id)
+    {
+        $comment = Comment::findorfail($id);
+
+        $comment->update([
+            'comment' => $request->input('comment')
+        ]);
+
+        return redirect()->back()->with('success', 'Comment updated');
+    }
+
+    public function commentDecline(Request $request, int $id)
+    {
+        $comment = Comment::findorfail($id);
+
+        $comment->delete();
+
+        return redirect()->back()->with('success', 'Comment Declined');
+    }
+
+    public function viewComment(int $id)
+    {
+        $comments = Comment::where('blog_id' , $id)->get();
+
+        return view('dashboard.admin.comment')->with('comments' , $comments);
+
     }
 }

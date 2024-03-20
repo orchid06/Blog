@@ -1,399 +1,202 @@
 @extends('layouts.user')
-
 @section('content')
 
-<body class="antialiased">
-    <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
-        <div class="container mt-5">
-            @if(session()->has('error'))
-            <div class="alert alert-danger" role="alert">
-                {{session()->get('error')}}
-            </div>
-            @endif
-            
-            @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
+@include('includes.alerts')
 
-            @if(session()->has('success'))
-            <div class="alert alert-success" role="alert">
-                {{session()->get('success')}}
-            </div>
-            @endif
+<style>
+    body {
+        margin: 40px;
+    }
 
+    button {
+        cursor: pointer;
+        outline: 0;
+        color: #AAA;
 
-            <!-- Create Post Form -->
-            <div class="mb=3">
-                <div class="row-3">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-11">
-                                <!-- myCart Button -->
-                                <div class="row">
-                                    <div class="col">
+    }
 
-                                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#inputModal">
-                                            Add New Product
-                                        </button>
+    .btn:focus {
+        outline: none;
+    }
 
-                                    </div>
-                                    <div class="col-2 text-righ">
-                                        <a href="{{route('cart.index')}}" type="button" class="btn btn-outline-success">
-                                            My Cart
-                                            </button><i class="bi bi-cart"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                                <!-- Search -->
-                                <div class="mt-3">
-                                    <div class="col text-end">
-                                        <form action="{{route('product.search')}}" method="get">
-                                            @csrf
+    .green {
+        color: green;
+    }
 
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" placeholder="Search product" name="search" id="search">
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-secondary" type="button">
-                                                        <i class="fa fa-search"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
+    .red {
+        color: red;
+    }
 
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Add New Product Modal -->
-                        <div class="mt-3">
+    .blog-link {
+        text-decoration: none;
+    }
 
-                            <div class="modal fade" id="inputModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h6 class="modal-title text center" id="exampleModalLabel">Add New product</h6>
-                                        </div>
-                                        <form action="{{route('product.store')}}" method="post" enctype="multipart/form-data">
-                                            @csrf
-                                            <div class="modal-body">
-                                                <div class="container">
-                                                    <div class="row">
+    .blog-link h2.card-title {
+        color: black;
+    }
 
-                                                        <div class="form-row">
-                                                            <label for="title" class="form-label">Product Name :</label>
-                                                            <input type="text" class="form-control" name="title" id="title" placeholder="Enter Name" value="{{old('title')}}">
-                                                        </div>
+    .g-color-gray-dark-v4 {
+        color: #777 !important;
+        text-decoration: none !important;
+    }
+</style>
 
-                                                        <div class="form-row">
-                                                            <label for="description" class="form-label">Product description :</label>
-                                                            <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter Description">{{old('description')}}</textarea>
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <label for="price" class="form-label">Price :</label>
-                                                            <input type="text" class="form-control" name="price" id="price" placeholder="BDT" value="{{old('price')}}">
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <label for="discount" class="form-label">Discount :</label>
-                                                            <input type="text" class="form-control" name="discount" id="discount" placeholder="Discount" value="{{old('discount')}}">
-
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="type" id="flat" value="0">
-                                                                <label class="form-check-label" for="flat">
-                                                                    ৳
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="type" id="percentage" checked value="1">
-                                                                <label class="form-check-label" for="percentage">
-                                                                    %
-                                                                </label>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <label for="qty" class="form-label">Quantity :</label>
-                                                            <input type="text" class="form-control" name="qty" id="qty" placeholder="Quantity" value="{{old('qty')}}">
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <label for="image" class="form-label">Product Image :</label>
-                                                            <input class="form-control" type="file" id="image" name="image">
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <label for="gallery_image" class="form-label">Gallery Image:</label>
-                                                            <input class="form-control" type="file" id="gallery_image" name="gallery_image[]" multiple>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-success">Add</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--Cards-->
-            <div class="mb-3">
-                <div class="container">
-                    @if(count($products)>0)
-                    <div class="row">
-                        @foreach( $products as $product )
-                        <div class="col-4">
-                            <div class="card" style="width: 18rem;">
-                                <div class="card-body">
-                                    <img src="uploads/{{$product->image}}" style="width:250px; height:150px;">
-                                    <h6 class="card-subtitle mb-1 text-muted"></h6>
-                                    <a href="{{route('product.page', ['id'=>$product->id])}}" target="_blank">
-                                        <h5>{{$product->title}}</h5>
-                                    </a>
-                                    <p class="card-text">{{$product->description}}</p>
-                                    <h6 class="card-title">Price : {{$product->price}} BDT</h6>
-                                    <h6 class="card-title mb-1 text-muted">In Stock: {{$product->qty}}</h6>
-                                    <h6 class="card-title mb-1 text-muted">Discount: {{$product->discount}} {{$product->discountType}}</h6>
-                                    <h6 class="card-title mb-1 text-muted">Discounted Price : {{$product->discountedPrice}}</h6>
-                                    <!--Card Buttons-->
-                                    <h6 class="card-title" style="text-align:right;">
-
-                                        <form action="{{route('product.addToCart', ['ids'=> $product->id])}}" method="post">
-                                            @csrf
-
-                                            <button class="btn btn-link px-2" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
-
-                                            </button>
-
-                                            <input id="form1" min="1" name="qty" id='qty' max="{{$product->qty}}" value="1" type="number" class="form-control form-control-sm" />
-
-                                            <button class="btn btn-link px-2" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
-
-                                            </button>
-
-                                            <div class="col">
-
-                                                <button type="submit" class="btn btn-outline-success">
-                                                    Add To Cart
-                                                </button>
-
-                                                <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#editModal{{$product->id}}">
-                                                    Edit
-                                                </button>
-
-                                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{$product->id}}">
-                                                    Delete
-                                                </button>
-
-                                            </div>
-
-                                        </form>
-
-
-
-                                    </h6>
-                                    <!--edit modal-->
-                                    <div class="mt-3">
-
-                                        <div class="modal fade" id="editModal{{$product->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h6 class="modal-title text-center" id="exampleModalLabel">Update product</h6>
-                                                    </div>
-                                                    <form action="{{route('product.update' ,['id'=>$product->id])}}" method="post" enctype="multipart/form-data">
-                                                        @csrf
-                                                        <div class="modal-body">
-                                                            <div class="container">
-                                                                <div class="row">
-
-                                                                    <div class="form-row">
-                                                                        <label for="title" class="form-label">Product Name :</label>
-                                                                        <input type="text" class="form-control" name="title" id="title" placeholder="Enter Name" value="{{$product->title}}">
-                                                                    </div>
-
-                                                                    <div class="form-row">
-                                                                        <label for="description" class="form-label">Product description :</label>
-                                                                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter Description">{{$product->description}}</textarea>
-                                                                    </div>
-
-                                                                    <div class="form-row">
-                                                                        <label for="price" class="form-label">Price :</label>
-                                                                        <input type="text" class="form-control" name="price" id="price" placeholder="BDT" value="{{$product->price}}">
-                                                                    </div>
-
-                                                                    <div class="form-row">
-                                                                        <label for="discount" class="form-label">Discount :</label>
-                                                                        <input type="text" class="form-control" name="discount" id="discount" placeholder="Discount" value="{{$product->discount}}">
-
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="radio" name="type" id="flat" value="1">
-                                                                            <label class="form-check-label" for="flat">
-                                                                                ৳
-                                                                            </label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="radio" name="type" id="percentage" checked value="0">
-                                                                            <label class="form-check-label" for="percentage">
-                                                                                %
-                                                                            </label>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="form-row">
-                                                                        <label for="qty" class="form-label">Quantity :</label>
-                                                                        <input type="text" class="form-control" name="qty" id="qty" placeholder="Quantity" value="{{$product->qty}}">
-                                                                    </div>
-
-                                                                    <div class="form-row">
-                                                                        <label for="image" class="form-label">Product Image :</label>
-                                                                        <input class="form-control" type="file" name="image" id="image">
-                                                                    </div>
-
-                                                                    <div class="form-row">
-                                                                        <label for="gallery_image" class="form-label">Gallery Image:</label>
-                                                                        <input class="form-control" type="file" id="gallery_image" name="gallery_image[]" multiple>
-                                                                    </div>
-
-
-
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                            <button type="submit" class="btn btn-success">Update</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!--delete modal-->
-                                    <div class="mt-3">
-
-                                        <div class="modal fade" id="deleteModal{{$product->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h6 class="modal-title text-center" id="exampleModalLabel">Confirm Deletation</h6>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="container">
-
-                                                            ...Are you sure you want to delete <strong>{{$product->title}} ?</strong>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                        <a href="{{route('product.delete' , ['id'=>$product->id])}}" type="submit" class="btn btn-danger">Delete</a>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                    @else
-                    <h3>No Product Found </h3>
-                    @endif
-
-                </div>
-                <div class="mt-4">
-
-                </div>
-            </div>
-
-            <!-- Table 1 - On this page -->
-            <section class="py-3 py-md-5">
-                <div class="container">
-                    <div class="row">
-
-                        <div class="col">
-                            <div class="card widget-card border-light shadow-sm">
-                                <div class="card-body p-4">
-                                    <h5 class="card-title widget-card-title mb-4">On this Page</h5>
-                                    <div class="table-responsive">
-                                        <table class="table table-borderless bsb-table-xl text-nowrap align-middle m-0">
-                                            <thead>
-                                                <tr>
-                                                    <th>Total Product</th>
-                                                    <th>Total Quantity</th>
-                                                    <th>Total Price</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <h6 class="mb-1">{{$products->count()}}</h6>
-                                                    </td>
-                                                    <td>
-                                                        <h6 class="mb-1">{{$products->sum('qty')}}</h6>
-                                                    </td>
-                                                    <td>
-                                                        <h6 class="mb-1">{{$products->sum('price')}}</h6>
-
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Table 1 - Inventory -->
-                        <div class="col">
-                            <div class="card widget-card border-light shadow-sm">
-                                <div class="card-body p-4">
-                                    <h5 class="card-title widget-card-title mb-4">Inventory</h5>
-                                    <div class="table-responsive">
-                                        <table class="table table-borderless bsb-table-xl text-nowrap align-middle m-0">
-                                            <thead>
-                                                <tr>
-                                                    <th>Total Product</th>
-                                                    <th>Total Quantity</th>
-
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <h6 class="mb-1">{{$totalProduct}}</h6>
-                                                    </td>
-                                                    <td>
-                                                        <h6 class="mb-1">{{$totalQty}}</h6>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </section>
+<header class="py-5 border-bottom mb-4" style="background-image: url('/cover.jpg'); background-size: cover; background-position: center;">
+    <div class="container">
+        <div class="text-center my-5" style="color: white;">
+            <h1 class="fw-bolder">Welcome </h1>
+            <p class="lead mb-0">to this blog</p>
         </div>
     </div>
-</body>
+</header>
+<!-- Page content-->
+
+<div class="container">
+    <div class="row">
+        <!-- Blog entries-->
+        <div class="col-lg-8">
+            <!-- Featured blog post-->
+            <div class="card mb-4">
+                <a href="{{route('user.blogDetail', ['slug' => $fblog->slug])}}">
+                    <img class="card-img-top" src="{{url('/uploads/blog/'.$fblog->image)}}" style="width: 850px; height: 350px;" alt="..." />
+                </a>
+
+                <div class="card-body">
+                    <div class="small text-muted">Created at: {{$fblog->created_at}}</div>
+                    <a href="{{route('user.blogDetail', ['slug' => $fblog->slug])}}" class="blog-link">
+                        <h2 class="card-title">{{$fblog->title}}</h2>
+                    </a>
+                    <p class="card-text">{{$fblog->description}}</p>
+                    <a class="btn btn-primary" href="{{route('user.blogDetail', ['slug' => $fblog->slug])}}">Read more →</a>
+                </div>
+            </div>
+            <!-- Nested row for non-featured blog posts-->
+
+            <div class="row">
+                @forelse($blogs as $blog)
+                <div class="col-lg-6">
+                    <!-- Blog post-->
+                    <div class="card mb-4">
+                        <a href="{{route('user.blogDetail', ['slug' => $blog->slug])}}">
+                            <img class="card-img-top" src="{{url('/uploads/blog/'.$blog->image)}}" style="width: 414px; height: 250px;" alt="..." />
+                        </a>
+                        <div class="card-body">
+                            <div class="small text-muted">created at: {{$blog->created_at}}</div>
+                            <a href="{{route('user.blogDetail', ['slug' => $blog->slug])}}" class="blog-link">
+                                <h2 class="card-title h4">{{$blog->title}}</h2>
+                            </a>
+                            <p class="card-text">{{$blog->description}}</p>
+                            <a class="btn btn-primary" href="{{route('user.blogDetail', ['slug' => $blog->slug])}}">Read more →</a>
+                        </div>
+                        <div class="card-footer">
+
+                            <script src="https://use.fontawesome.com/fe459689b4.js"></script>
+
+                            <ul class="list-inline d-sm-flex my-0">
+                                <li class="list-inline-item g-mr-20">
+                                    <form method="get" action="{{ route('user.like', ['blogId'=>$blog->id])}}">
+                                        @csrf
+
+                                        <input type="hidden" name="like">
+                                        <button type="submit" class="btn">
+                                            <i class="fa fa-thumbs-up g-pos-rel g-top-1 g-mr-3" aria-hidden="true" style="color: {{ $blog->likes->contains('user_id', auth()->id()) ? 'green' : 'grey' }}"></i>
+                                            {{$blog->likes->count()}}
+                                        </button>
+                                    </form>
+                                </li>
+                                <li class="list-inline-item g-mr-20">
+                                    <form method="get" action="{{ route('user.dislike', ['blogId'=>$blog->id])}}">
+                                        @csrf
+
+                                        <input type="hidden" name="dislike">
+                                        <button type="submit" class="btn">
+                                            <i class="fa fa-thumbs-down g-pos-rel g-top-1 g-mr-3" aria-hidden="true" style="color: {{ $blog->dislikes->contains('user_id', auth()->id()) ? 'red' : 'grey' }}"></i>
+                                            {{$blog->dislikes->count()}}
+                                        </button>
+                                    </form>
+                                </li>
+                                <li class="list-inline-item ml-auto">
+                                    <a class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover" href="{{route('user.blogDetail', ['slug' => $blog->slug])}}">
+                                        <i class="fa fa-reply g-pos-rel g-top-1 g-mr-3"></i>
+                                        {{$blog->comments->count()}} Comment
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                @empty<p> No Blog Found</p>
+                @endforelse
+            </div>
+
+
+            <!-- Pagination-->
+            <nav aria-label="Pagination">
+                <hr class="my-0" />
+                <ul class="pagination justify-content-center my-4">
+                    @if ($blogs->onFirstPage())
+                    <li class="page-item disabled"><span class="page-link">Newer</span></li>
+                    @else
+                    <li class="page-item"><a class="page-link" href="{{ $blogs->previousPageUrl() }}" tabindex="-1">Newer</a></li>
+                    @endif
+
+                    @foreach ($blogs->getUrlRange(1, $blogs->lastPage()) as $page => $url)
+                    <li class="page-item {{ $page == $blogs->currentPage() ? 'active' : '' }}" aria-current="page">
+                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                    </li>
+                    @endforeach
+
+                    @if ($blogs->hasMorePages())
+                    <li class="page-item"><a class="page-link" href="{{ $blogs->nextPageUrl() }}">Older</a></li>
+                    @else
+                    <li class="page-item disabled"><span class="page-link">Older</span></li>
+                    @endif
+                </ul>
+            </nav>
+        </div>
+        <!-- Side widgets-->
+        <div class="col-lg-4">
+            <!-- Search widget-->
+            <div class="card mb-4">
+                <div class="card-header">Search</div>
+                <div class="card-body">
+                    <form action="{{route('search')}}" method="post">
+                        @csrf
+                        <div class="input-group">
+                            <input class="form-control" type="text" id="search" name="search" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
+                            <button class="btn btn-primary" id="button-search" type="submit">Go!</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Categories widget-->
+            <div class="card mb-4">
+                <div class="card-header">Categories</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <ul class="list-unstyled mb-0">
+                                <li><a href="#!">Web Design</a></li>
+                                <li><a href="#!">HTML</a></li>
+                                <li><a href="#!">Freebies</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-6">
+                            <ul class="list-unstyled mb-0">
+                                <li><a href="#!">JavaScript</a></li>
+                                <li><a href="#!">CSS</a></li>
+                                <li><a href="#!">Tutorials</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Side widget-->
+            <div class="card mb-4">
+                <div class="card-header">Side Widget</div>
+                <div class="card-body">You can put anything you want inside of these side widgets. They are easy to use, and feature the Bootstrap 5 card component!</div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

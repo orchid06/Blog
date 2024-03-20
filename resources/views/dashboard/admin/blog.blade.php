@@ -1,7 +1,16 @@
 @extends('layouts.admin')
 
 @section('content')
+
+<style>
+    .g-color-gray-dark-v4 {
+        color: #777777 !important;
+        text-decoration: none !important;
+    }
+</style>
+
 <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
 <hr>
 <div class="container bootstrap snippets bootdey">
     @include('includes.alerts')
@@ -90,6 +99,8 @@
                                 <tr>
                                     <th class="text-center"><span>Title</span></th>
                                     <th><span>Description</span></th>
+                                    <th><span>Comments</span></th>
+                                    <th><span>Action</span></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -101,6 +112,12 @@
                                     </td>
                                     <td>
                                         {{$blog->description}}
+                                    </td>
+                                    <td>
+                                        <a class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover" href="{{route('admin.viewComment', ['id' => $blog->id])}}">
+                                            <i class="fa fa-reply g-pos-rel g-top-1 g-mr-3"></i>
+                                            {{$blog->comments->count()}} Comment
+                                        </a>
                                     </td>
                                     <td style="width: 20%;">
 

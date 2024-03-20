@@ -9,6 +9,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Comment;
+use App\Models\Dislike;
+use App\Models\PendingComment;
 
 class BlogController extends Controller
 {
@@ -19,7 +22,7 @@ class BlogController extends Controller
         $fblog = Blog::latest()->first();
         $blogs = Blog::latest()->paginate(4);
 
-        return view('welcome', compact('blogs', 'fblog'));
+        return view('home', compact('blogs', 'fblog'));
     }
 
 
@@ -102,7 +105,7 @@ class BlogController extends Controller
             'gallery_image'   => $galleryFileNames ?? $product->galery_image,
         ]);
 
-        return back()->with('success', 'Product Updated');
+        return back()->with('success', 'Blog Updated');
     }
 
     public function blogDelete(int $id): RedirectResponse
@@ -142,139 +145,90 @@ class BlogController extends Controller
         ]);
     }
 
-    public function like($blogId)
+    public function like($blogId): RedirectResponse
     {
-        
+
         $existingLike = Like::where('user_id', auth()->id())
             ->where('blog_id', $blogId)
             ->first();
 
+        $existingDisLike = Dislike::where('user_id', auth()->id())
+            ->where('blog_id', $blogId)
+            ->first();
+
         if ($existingLike) {
-            
+
             $existingLike->delete();
             return back()->with('success', 'Blog post unliked successfully.');
         }
 
-        
+
         Like::create([
             'user_id' => auth()->id(),
             'blog_id' => $blogId,
         ]);
 
-        return back()->with('success', 'Blog post liked successfully.');
-    }
+        if ($existingDisLike) {
 
-    public function addToCart(Request $request, $id): RedirectResponse
-    {
-
-        $product = Product::findOrfail($id);
-
-        $request->validate([
-            'qty' => 'required|numeric|gt:0|max:' . $product->qty,
-        ]);
-
-        $existingCartItem = Cart::where('product_id', $product->id)
-            ->where('user_id', auth('web')->id())
-            ->first();
-
-        if ($existingCartItem) {
-            $existingCartItem->update(['qty' => $existingCartItem->qty + $request->input('qty')]);
-        } else {
-
-            Cart::create([
-                'user_id'     => Auth::user()->id,
-                'product_id'  => $product->id,
-                'qty'         => $request->input('qty'),
-                'price'       => $product->discountedPrice,
-
-            ]);
+            $existingDisLike->delete();
         }
 
-        $product->decrement('qty', $request->input('qty'));
-
-
-        return back()->with('success', 'Item added to cart successfully.');
+        return back()->with('success', 'Blog post liked');
     }
 
-    public function cartIndex(): View
+    public function dislike($blogId): RedirectResponse
     {
-        $user  = auth('web')->user();
-        $user_name = Auth::user()->name;
-        $user_id = Auth::user()->id;
 
-        $cartProducts = $user->carts;
+        $existingDisLike = Dislike::where('user_id', auth()->id())
+            ->where('blog_id', $blogId)
+            ->first();
 
-        $totalCartProduct = $cartProducts->count();
-        $totalCartQty     = $cartProducts->sum('qty');
-        $totalCartPrice   = $cartProducts->sum(function ($cartProduct) {
-            return $cartProduct->price * $cartProduct->qty;
-        });
+        $existingLike = Like::where('user_id', auth()->id())
+            ->where('blog_id', $blogId)
+            ->first();
 
-        return view('dashboard.user.cart', compact('cartProducts', 'totalCartProduct', 'totalCartQty', 'totalCartPrice', 'user_name', 'user_id'));
-    }
+        if ($existingDisLike) {
 
-
-    public function cartQtyUpdate(Request $request, $id): RedirectResponse
-    {
-        $cart     = Cart::where('user_id', $id)->firstorfail();
-        $product  = $cart->product;
+            $existingDisLike->delete();
+            return back()->with('success', 'Dislike removed');
+        }
 
 
-        $maxValue        = $product->qty;
-        $existingCartQty = $cart->qty;
-
-        $request->validate([
-            'cartQty' => 'required|numeric|max:' . $maxValue,
+        Dislike::create([
+            'user_id' => auth()->id(),
+            'blog_id' => $blogId,
         ]);
 
-        $inputQty  = $request->input('cartQty');
+        if ($existingLike) {
 
-        $stockQty  = $product->qty;
+            $existingLike->delete();
+            
+        }
 
-        $qtyDifference = $existingCartQty - $inputQty;
-
-        $newQty = $stockQty;
-
-        $newQty = match (true) {
-            $qtyDifference > 0 => $stockQty + $qtyDifference,
-            $qtyDifference < 0 => $stockQty - abs($qtyDifference),
-            default => $stockQty
-        };
-
-
-        $product->update(['qty' => $newQty]);
-
-
-        $cart->update(['qty' => $inputQty]);
-
-        return back()->with('success', 'Quantity updated successfully.');
+        return back()->with('success', 'Blog post Disliked');
     }
 
-
-    public function cartProductDelete($id): RedirectResponse
+    public function blogDetail(string $slug ): View
     {
-        $cartProduct = Cart::findOrFail($id);
+        $blog = Blog::where('slug', $slug )->first();
 
-        $product = $cartProduct->product;
+        $comments = $blog->comments()->where('status', 1)->get();
 
-        $product->update(['qty' => $product->qty + $cartProduct->qty]);
-
-        $cartProduct->delete();
-
-        return back()->with('success', 'Item deleted successfully.');
+        return view('dashboard.user.blogDetail')->with([
+            'blog' => $blog,
+            'comments' => $comments
+        ]);
     }
 
-
-    public function productDetails($id): View
+    public function comment(Request $request, int $id): RedirectResponse
     {
+        Comment::create([
 
-        $product = Product::findOrfail($id);
+            'blog_id' => $id,
+            'user_id' => auth()->id(),
+            'comment' => $request->input('comment')
+        ]);
 
-
-        $orderProducts = Cart::where('product_id', $id)->get();
-
-        $totalOrder = $orderProducts->sum('qty');
-
-        return view('productDetails', compact('product', 'totalOrder'));
+        return back()->with('success', 'Comment added for review');
     }
 }
