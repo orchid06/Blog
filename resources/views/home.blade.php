@@ -39,6 +39,13 @@
         color: #777 !important;
         text-decoration: none !important;
     }
+
+
+    .category_link {
+        font-weight: 500;
+        color: #14b397;
+        text-decoration: none;
+    }
 </style>
 
 <header class="py-5 border-bottom mb-4" style="background-image: url('/cover.jpg'); background-size: cover; background-position: center;">
@@ -158,7 +165,7 @@
         <div class="col-lg-4">
             <!-- Search widget-->
             <div class="card mb-4">
-                <div class="card-header">Search</div>
+                <div class="card-header"><h6>Search</h6></div>
                 <div class="card-body">
                     <form action="{{route('search')}}" method="post">
                         @csrf
@@ -171,21 +178,21 @@
             </div>
             <!-- Categories widget-->
             <div class="card mb-4">
-                <div class="card-header">Categories</div>
+                <div class="card-header"><h6>Categories</h6></div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-6">
                             <ul class="list-unstyled mb-0">
-                                <li><a href="#!">Web Design</a></li>
-                                <li><a href="#!">HTML</a></li>
-                                <li><a href="#!">Freebies</a></li>
+                                <li><a href="#!" class="category_link">Adventure </a></li>
+                                <li><a href="#!" class="category_link">Budget Travellers</a></li>
+                                <li><a href="#!" class="category_link">Family Travel</a></li>
                             </ul>
                         </div>
                         <div class="col-sm-6">
                             <ul class="list-unstyled mb-0">
-                                <li><a href="#!">JavaScript</a></li>
-                                <li><a href="#!">CSS</a></li>
-                                <li><a href="#!">Tutorials</a></li>
+                                <li><a href="#!" class="category_link">Solo Travel</a></li>
+                                <li><a href="#!" class="category_link">Luxury Travel</a></li>
+                                <li><a href="#!" class="category_link">Cultural and Heritage </a></li>
                             </ul>
                         </div>
                     </div>
@@ -193,8 +200,11 @@
             </div>
             <!-- Side widget-->
             <div class="card mb-4">
-                <div class="card-header">Side Widget</div>
-                <div class="card-body">You can put anything you want inside of these side widgets. They are easy to use, and feature the Bootstrap 5 card component!</div>
+                <div class="card-header"> <h6>Quote of the day</h6></div>
+                <div class="card-body">
+                    <iframe frameBorder="0" frameBorder="0" style="width:380px; height:200px" src="https://kwize.com/quote-of-the-day/embed/&txt=0&font=&color=000000&background=d0f5f5"></iframe>
+                </div>
+
             </div>
         </div>
     </div>

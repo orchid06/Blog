@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 use Illuminate\View\View;
 use App\Http\Controllers\ProductController;
 use App\Models\Comment;
-use App\Models\PendingComment;
+use App\Models\Category;
 
 class AdminController extends Controller
 {
@@ -125,7 +125,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'User active status updated');
     }
 
-    public function emailVerify(Request $request, int $id)
+    public function emailVerify(Request $request, int $id):RedirectResponse
     {
         $user = User::findorfail($id);
         $user->update([
@@ -135,14 +135,14 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Email Verification status updated');
     }
 
-    public function comments()
+    public function comments(): view
     {
         $comments = Comment::latest()->get();
 
         return view('dashboard.admin.comment')->with('comments', $comments);
     }
 
-    public function commentApprove(Request $request, int $id)
+    public function commentApprove(Request $request, int $id): RedirectResponse
     {
         $user = Comment::findorfail($id);
         $user->update([
@@ -152,7 +152,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Comment Approved');
     }
 
-    public function commentUpdate(Request $request, int $id)
+    public function commentUpdate(Request $request, int $id): RedirectResponse
     {
         $comment = Comment::findorfail($id);
 
@@ -163,7 +163,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Comment updated');
     }
 
-    public function commentDecline(Request $request, int $id)
+    public function commentDecline(Request $request, int $id): RedirectResponse
     {
         $comment = Comment::findorfail($id);
 
@@ -172,11 +172,24 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Comment Declined');
     }
 
-    public function viewComment(int $id)
+    public function viewComment(int $id): view
     {
         $comments = Comment::where('blog_id' , $id)->get();
 
         return view('dashboard.admin.comment')->with('comments' , $comments);
 
+    }
+
+    public function categoryUpdate(Request $request)
+    {
+        $blogId = $request->input('blog_id');
+        $categoryName = $request->input('category');
+
+        $category = Category::where('blog_id', $blogId);
+
+        $category->update([
+            'blog_id' => $blogId,
+            'category'=>$categoryName
+        ]);
     }
 }

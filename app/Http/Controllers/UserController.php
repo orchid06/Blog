@@ -142,12 +142,4 @@ class UserController extends Controller
 
         return back()->with('success', 'User Updated');
     }
-
-    public function updateLike(Request $request)
-    {
-        User::where('id', $request->userId)->update([
-            'like'    => $request->input('likeValue'),
-            'dislike' => $request->input('dislikeValue'),
-        ]);
-    }
 }

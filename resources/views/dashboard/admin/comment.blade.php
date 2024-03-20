@@ -35,7 +35,7 @@
 
                                 <td>
                                     <div class="row">
-                                        <div class="col-4">
+                                        <div class="col-5">
                                             <form method="post" action="{{ route('admin.commentApprove', ['id'=>$comment->id])}}">
                                                 @csrf
                                                 @method('POST')

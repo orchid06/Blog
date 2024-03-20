@@ -98,6 +98,7 @@
                             <thead>
                                 <tr>
                                     <th class="text-center"><span>Title</span></th>
+                                    <th><span>Category</span></th>
                                     <th><span>Description</span></th>
                                     <th><span>Comments</span></th>
                                     <th><span>Action</span></th>
@@ -108,7 +109,25 @@
                                 <tr>
                                     <td>
                                         <img src="{{url('uploads/blog/'.$blog->image)}}" alt="">
-                                        <a href="" class="user-link">{{$blog->title}}</a>
+                                        <a href="" class="user-link">
+                                            <h6>{{$blog->title}}</h6>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <!-- Drop Down -->
+                                        <div class="btn-group">
+                                            <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                {{$blog->category->category}}
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" data-category="Adventure">Adventure</a></li>
+                                                <li><a class="dropdown-item" href="#" data-category="Budget Travellers">Budget Travellers</a></li>
+                                                <li><a class="dropdown-item" href="#" data-category="Family Travel">Family Travel</a></li>
+                                                <li><a class="dropdown-item" href="#" data-category="Solo Travel">Solo Travel</a></li>
+                                                <li><a class="dropdown-item" href="#" data-category="Luxury Travel">Luxury Travel</a></li>
+                                                <li><a class="dropdown-item" href="#" data-category="Cultural and Heritage">Cultural and Heritage</a></li>
+                                            </ul>
+                                        </div>
                                     </td>
                                     <td>
                                         {{$blog->description}}
@@ -232,4 +251,35 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('.dropdown-item').click(function(e) {
+            e.preventDefault();
+            var blogId = "{{ $blog->id }}";
+            var category = $(this).data('category');
+            $.ajax({
+                url: "{{ route('admin.categoryUpdate')}}",
+                type: 'POST',
+                data: {
+                    blog_id: blogId,
+                    category: category,
+                    "_token": '{{ csrf_token() }}'
+                },
+                success: function(response) {
+
+                    console.log('Category updated successfully');
+                },
+                error: function(xhr, status, error) {
+
+                    console.error('Error updating category:', error);
+                }
+            });
+        });
+    });
+</script>
+
+
+
+
 @endsection

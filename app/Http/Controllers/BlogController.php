@@ -139,7 +139,7 @@ class BlogController extends Controller
         $blogs = Blog::where('title', 'LIKE', "%$search%")
             ->orWhere('description', 'LIKE', "%$search%")->paginate(4);
 
-        return view('dashboard.user.home')->with([
+        return view('home')->with([
             'blogs' => $blogs,
             'fblog' => $fblog
         ]);

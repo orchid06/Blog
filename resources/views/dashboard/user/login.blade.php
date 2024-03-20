@@ -4,6 +4,14 @@
 
 @include('includes.alerts')
 
+<style>
+    .Sign_up_link {
+        font-weight: 500;
+        color: #14b397;
+        text-decoration: none;
+    }
+</style>
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -61,9 +69,13 @@
                                 </button>
 
                                 @if (Route::has('password.request'))
-                                <a class="btn btn-link" href="{{ route('password.request') }}">
+                                <a class="btn btn-link" href="{{ route('password.request') }}" style="text-decoration: none;">
                                     {{ __('Forgot Your Password?') }}
                                 </a>
+
+                                  Don't have a account ?
+                                <a href="{{route('user.register')}}" class="Sign_up_link">Sign Up</a>
+
                                 @endif
                             </div>
                         </div>

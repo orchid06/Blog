@@ -104,6 +104,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/comment-decline/{id}', [AdminController::class, 'commentDecline'])->name('commentDecline');
 
         Route::get('view-comment/{id}' , [AdminController::class, 'viewComment'])->name('viewComment');
+        Route::get('category-update/', [AdminController::class, 'categoryUpdate'])->name('categoryUpdate');
         
     });
 });
