@@ -170,6 +170,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
@@ -241,18 +242,73 @@
                             <a href="{{route('admin.blogs')}}" class="list-group-item list-group-item-action py-2 ripple inactive">
                                 <i class="fas fa-chart-area fa-fw me-3"></i><span>Blogs</span>
                             </a>
+
                             <a href="{{route('admin.comments')}}" class="list-group-item list-group-item-action py-2 ripple inactive">
                                 <i class="fas fa-chart-area fa-fw me-3"></i><span>Comments</span>
                             </a>
+
+
+                        </div>
+                        <div class="btn-group" style="padding-left: 15px;">
+                            <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="padding-left: 35px;">
+                                Category
+                            </button>
+
+
+
+                            <ul class="dropdown-menu">
+
+                                @foreach($categories as $category)
+                                <li><a class="dropdown-item" href="#">{{$category->name}}</a></li>
+                                @endforeach
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#" id="addNewCategory">Add New Category</a></li>
+                            </ul>
                         </div>
                     </div>
+
                 </nav>
             </div>
         </nav>
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add New Category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Your form or content for adding a new category goes here -->
+                        <form action="{{route('admin.addNewCategory')}}" method="POST">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Category Name</label>
+                                <input type="text" class="form-control" id="name" name="name">
+                            </div>
+                            <!-- Add more fields as needed -->
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
         <main>
             @yield('content')
         </main>
     </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $("#addNewCategory").click(function(event) {
+            event.preventDefault();
+            $('#myModal').modal('show');
+        });
+    </script>
 </body>
 
 </html>

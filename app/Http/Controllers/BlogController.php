@@ -56,6 +56,7 @@ class BlogController extends Controller
 
     public function blogCreate(Request $request): RedirectResponse
     {
+        
         $request->validate([
             'title'           => 'required|max:50',
             'description'     => 'required|max:200',
@@ -74,6 +75,7 @@ class BlogController extends Controller
             'description'     => $request->input('description'),
             'image'           => $imageName,
             'gallery_image'   => $galleryFileNames,
+            'cat_id'          => $request->input('cat_id')
         ]);
 
         return back()->with('success', 'Blog Created successfully');
@@ -103,6 +105,7 @@ class BlogController extends Controller
             'description'     => $request->input('description'),
             'image'           => $imageName ?? $product->image,
             'gallery_image'   => $galleryFileNames ?? $product->galery_image,
+            'cat_id'          => $request->input('cat_id')
         ]);
 
         return back()->with('success', 'Blog Updated');
@@ -230,5 +233,16 @@ class BlogController extends Controller
         ]);
 
         return back()->with('success', 'Comment added for review');
+    }
+
+    public function viewCategory(int $id): View
+    {
+        
+        $fblog = Blog::latest()->first();
+        $blogs = Blog::where('cat_id' , $id)->paginate(4);
+
+        return view('home')->with(['blogs' => $blogs,
+                                    'fblog' => $fblog]);
+
     }
 }

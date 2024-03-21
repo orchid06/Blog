@@ -11,7 +11,7 @@ class Blog extends Model
 {
     use HasFactory;
     protected $table   = 'blogs';
-    protected $guarded =[];
+    protected $guarded = [];
     protected $casts = ['gallery_image' => 'object'];
 
     protected static function boot()
@@ -38,9 +38,8 @@ class Blog extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function categories()
+    public function category()
     {
-        return $this->hasMany(Category::class);
+        return $this->belongsTo(Category::class);
     }
-
 }

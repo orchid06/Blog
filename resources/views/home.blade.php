@@ -165,7 +165,9 @@
         <div class="col-lg-4">
             <!-- Search widget-->
             <div class="card mb-4">
-                <div class="card-header"><h6>Search</h6></div>
+                <div class="card-header">
+                    <h6>Search</h6>
+                </div>
                 <div class="card-body">
                     <form action="{{route('search')}}" method="post">
                         @csrf
@@ -178,21 +180,23 @@
             </div>
             <!-- Categories widget-->
             <div class="card mb-4">
-                <div class="card-header"><h6>Categories</h6></div>
+                <div class="card-header">
+                    <h6>Categories</h6>
+                </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-6">
                             <ul class="list-unstyled mb-0">
-                                <li><a href="#!" class="category_link">Adventure </a></li>
-                                <li><a href="#!" class="category_link">Budget Travellers</a></li>
-                                <li><a href="#!" class="category_link">Family Travel</a></li>
+                                <li><a href="{{route('viewCategory', ['id'=> 1])}}" class="category_link">Adventure </a></li>
+                                <li><a href="{{route('viewCategory', ['id'=> 2])}}" class="category_link">Budget Travellers</a></li>
+                                <li><a href="{{route('viewCategory', ['id'=> 3])}}" class="category_link">Family Travel</a></li>
                             </ul>
                         </div>
                         <div class="col-sm-6">
                             <ul class="list-unstyled mb-0">
-                                <li><a href="#!" class="category_link">Solo Travel</a></li>
-                                <li><a href="#!" class="category_link">Luxury Travel</a></li>
-                                <li><a href="#!" class="category_link">Cultural and Heritage </a></li>
+                                <li><a href="{{route('viewCategory', ['id'=> 4])}}" class="category_link">Solo Travel</a></li>
+                                <li><a href="{{route('viewCategory', ['id'=> 5])}}" class="category_link">Luxury Travel</a></li>
+                                <li><a href="{{route('viewCategory', ['id'=> 6])}}" class="category_link">Cultural and Heritage </a></li>
                             </ul>
                         </div>
                     </div>
@@ -200,7 +204,9 @@
             </div>
             <!-- Side widget-->
             <div class="card mb-4">
-                <div class="card-header"> <h6>Quote of the day</h6></div>
+                <div class="card-header">
+                    <h6>Quote of the day</h6>
+                </div>
                 <div class="card-body">
                     <iframe frameBorder="0" frameBorder="0" style="width:380px; height:200px" src="https://kwize.com/quote-of-the-day/embed/&txt=0&font=&color=000000&background=d0f5f5"></iframe>
                 </div>

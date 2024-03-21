@@ -48,14 +48,16 @@ class AdminController extends Controller
     {
         $users    = User::all();
 
-        return view('dashboard.admin.home', compact('users'));
+        return view('dashboard.admin.home')->with(['users' => $users]);
     }
 
     public function viewBlog(): View
     {
-        $blogs = Blog::latest()->get();
+        $blogs      = Blog::latest()->get();
+        $categories = Category::all();
 
-        return view('dashboard.admin.blog')->with('blogs', $blogs);
+        return view('dashboard.admin.blog')->with(['blogs'      => $blogs, 
+                                                   'categories' => $categories]);
     }
 
     public function userCreate(Request $request): RedirectResponse
@@ -125,7 +127,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'User active status updated');
     }
 
-    public function emailVerify(Request $request, int $id):RedirectResponse
+    public function emailVerify(Request $request, int $id): RedirectResponse
     {
         $user = User::findorfail($id);
         $user->update([
@@ -174,22 +176,22 @@ class AdminController extends Controller
 
     public function viewComment(int $id): view
     {
-        $comments = Comment::where('blog_id' , $id)->get();
+        $comments = Comment::where('blog_id', $id)->get();
 
-        return view('dashboard.admin.comment')->with('comments' , $comments);
-
+        return view('dashboard.admin.comment')->with('comments', $comments);
     }
 
     public function categoryUpdate(Request $request)
     {
-        $blogId = $request->input('blog_id');
-        $categoryName = $request->input('category');
+        dd($request);
+    }
 
-        $category = Category::where('blog_id', $blogId);
-
-        $category->update([
-            'blog_id' => $blogId,
-            'category'=>$categoryName
+    public function addNewCategory(Request $request)
+    {
+        Category::create([
+            'name' => $request->input('name')
         ]);
+
+        return back()->with('success' , 'Category Added');
     }
 }

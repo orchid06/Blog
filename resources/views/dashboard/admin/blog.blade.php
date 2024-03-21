@@ -65,6 +65,20 @@
                         </div>
 
                         <div class="row mb-3">
+                            <label for="dropdown" class="col-md-4 col-form-label text-md-end">{{__('Category:')}}</label>
+                            <div class="col-6">
+                                <select id="dropdown" name="cat_id" class="form-control">
+                                    <option value="1">Adventure</option>
+                                    <option value="2">Budget Travellers</option>
+                                    <option value="3">Family Travel</option>
+                                    <option value="4">Solo Travel</option>
+                                    <option value="5">Luxary Travel</option>
+                                    <option value="6">Culture and Heritage</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
                             <label for="image" class="col-md-4 col-form-label text-md-end">{{ __('Feature Photo :') }}</label>
 
                             <div class="col-md-6">
@@ -117,7 +131,7 @@
                                         <!-- Drop Down -->
                                         <div class="btn-group">
                                             <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                {{$blog->category->category}}
+                                                category
                                             </button>
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item" href="#" data-category="Adventure">Adventure</a></li>
@@ -181,6 +195,19 @@
                                                                     <strong>{{ $message }}</strong>
                                                                 </span>
                                                                 @enderror
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <label for="dropdown" class="col-md-4 col-form-label text-md-end">{{__('Category:')}}</label>
+                                                            <div class="col-6">
+
+                                                                <select id="dropdown" name="cat_id" class="form-control">
+                                                                    @foreach($categories as $category)
+                                                                    <option value="{{$category->id}}">{{$category->name}}</option>
+                                                                    @endforeach
+                                                                </select>
+
                                                             </div>
                                                         </div>
 
@@ -252,30 +279,41 @@
     </div>
 </div>
 
+
 <script>
-    $(document).ready(function() {
-        $('.dropdown-item').click(function(e) {
-            e.preventDefault();
-            var blogId = "{{ $blog->id }}";
-            var category = $(this).data('category');
-            $.ajax({
-                url: "{{ route('admin.categoryUpdate')}}",
-                type: 'POST',
-                data: {
-                    blog_id: blogId,
-                    category: category,
-                    "_token": '{{ csrf_token() }}'
-                },
-                success: function(response) {
+    const dropdownMenu = document.querySelector('.dropdown-menu');
 
-                    console.log('Category updated successfully');
-                },
-                error: function(xhr, status, error) {
 
-                    console.error('Error updating category:', error);
-                }
-            });
-        });
+    dropdownMenu.addEventListener('click', function(event) {
+
+        event.preventDefault();
+
+
+        const selectedCategory = event.target.dataset.category;
+
+
+        const xHttp = new XMLHttpRequest();
+
+
+        xHttp.onload = function() {
+
+            console.log(xHttp.responseText);
+        };
+
+
+        const route = '/admin/categoryUpdate';
+
+
+        xHttp.open("POST", route);
+
+
+        xHttp.setRequestHeader("Content-Type", "application/xml");
+
+
+        const xmlData = `<category>${selectedCategory}</category>`;
+
+
+        xHttp.send(xmlData);
     });
 </script>
 

@@ -40,6 +40,8 @@ Route::post('/email/verify/{id}', [VerificationController::class, 'verifyWithCod
 Route::post('/email/verification-notification', [VerificationController::class, 'sendVerificationEmail'])->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 Route::get('/verify-email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 
+Route::get('/category/view/{id}', [BlogController::class, 'viewCategory'])->name('viewCategory');
+
 
 Route::prefix('user')->name('user.')->group(function () {
 
@@ -104,7 +106,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/comment-decline/{id}', [AdminController::class, 'commentDecline'])->name('commentDecline');
 
         Route::get('view-comment/{id}' , [AdminController::class, 'viewComment'])->name('viewComment');
-        Route::get('category-update/', [AdminController::class, 'categoryUpdate'])->name('categoryUpdate');
+        Route::post('category-update/', [AdminController::class, 'categoryUpdate'])->name('categoryUpdate');
+
+        Route::post('add-new-category/', [AdminController::class, 'addNewCategory'])-> name('addNewCategory');
         
     });
 });
