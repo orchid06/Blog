@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\View\View;
 use App\Notifications\CustomVerifyEmail;
+use App\Models\Category;
 
 class UserController extends Controller
 {
@@ -80,8 +81,9 @@ class UserController extends Controller
 
     public function index()
     {
-        $fblog = Blog::latest()->first();
-        $blogs = Blog::latest()->paginate(4);
+        $fblog      = Blog::latest()->first();
+        $blogs      = Blog::latest()->paginate(4);
+        $categories = Category::all();
 
         $user = Auth::user();
         $verified = $user->email_verified_at;
@@ -92,9 +94,10 @@ class UserController extends Controller
 
         
         return view('home')->with([
-            'blogs' => $blogs,
-            'fblog' => $fblog,
-            'user' => $user
+            'blogs'         => $blogs,
+            'fblog'         => $fblog,
+            'user'          => $user,
+            'categories'    => $categories
         ]);
     }
 
@@ -117,7 +120,7 @@ class UserController extends Controller
         if ($request->newPassword) {
             $request->validate([
                 'newPassword'  => 'required|min:5|max:30',
-                'cPassword' => 'required|min:5|max:30|same:newPassword'
+                'cPassword'    => 'required|min:5|max:30|same:newPassword'
             ]);
         }
 

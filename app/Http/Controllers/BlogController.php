@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Comment;
 use App\Models\Dislike;
 use App\Models\PendingComment;
+use App\Models\Category;
 
 class BlogController extends Controller
 {
@@ -21,8 +22,11 @@ class BlogController extends Controller
     {
         $fblog = Blog::latest()->first();
         $blogs = Blog::latest()->paginate(4);
+        $categories = Category::all();
 
-        return view('home', compact('blogs', 'fblog'));
+        return view('home')->with(['blogs'      => $blogs, 
+                                   'fblog'      => $fblog,
+                                   'categories' => $categories]);
     }
 
 
@@ -136,15 +140,17 @@ class BlogController extends Controller
 
     public function search(Request $request): View
     {
-        $search = $request->input('search');
-        $fblog = Blog::latest()->first();
+        $search      = $request->input('search');
+        $fblog       = Blog::latest()->first();
+        $categories  = Category::all();
 
         $blogs = Blog::where('title', 'LIKE', "%$search%")
             ->orWhere('description', 'LIKE', "%$search%")->paginate(4);
 
         return view('home')->with([
-            'blogs' => $blogs,
-            'fblog' => $fblog
+            'blogs'      => $blogs,
+            'fblog'      => $fblog,
+            'categories' => $categories
         ]);
     }
 
@@ -238,11 +244,13 @@ class BlogController extends Controller
     public function viewCategory(int $id): View
     {
         
-        $fblog = Blog::latest()->first();
-        $blogs = Blog::where('cat_id' , $id)->paginate(4);
+        $fblog      = Blog::latest()->first();
+        $blogs      = Blog::where('cat_id' , $id)->paginate(4);
+        $categories = Category::all();
 
-        return view('home')->with(['blogs' => $blogs,
-                                    'fblog' => $fblog]);
+        return view('home')->with(['blogs'       => $blogs,
+                                    'fblog'      => $fblog,
+                                    'categories' => $categories]);
 
     }
 }

@@ -186,18 +186,11 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-6">
+                            @foreach($categories as $category)
                             <ul class="list-unstyled mb-0">
-                                <li><a href="{{route('viewCategory', ['id'=> 1])}}" class="category_link">Adventure </a></li>
-                                <li><a href="{{route('viewCategory', ['id'=> 2])}}" class="category_link">Budget Travellers</a></li>
-                                <li><a href="{{route('viewCategory', ['id'=> 3])}}" class="category_link">Family Travel</a></li>
+                                <li><a href="{{route('viewCategory', ['id'=> $category->id])}}" class="category_link">{{$category->name}} </a></li>
                             </ul>
-                        </div>
-                        <div class="col-sm-6">
-                            <ul class="list-unstyled mb-0">
-                                <li><a href="{{route('viewCategory', ['id'=> 4])}}" class="category_link">Solo Travel</a></li>
-                                <li><a href="{{route('viewCategory', ['id'=> 5])}}" class="category_link">Luxury Travel</a></li>
-                                <li><a href="{{route('viewCategory', ['id'=> 6])}}" class="category_link">Cultural and Heritage </a></li>
-                            </ul>
+                            @endforeach
                         </div>
                     </div>
                 </div>
